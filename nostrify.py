@@ -3,18 +3,15 @@
 # pylint: disable=consider-using-f-string
 
 import os
+import configparser
 from pyln.client import Plugin
 
 plugin = Plugin()
 
-def send_nostr_event(content):
+def send_nostr_event(content, plugin):
     """ Sends `content` as a Nostr Event"""
-    os.environ.get('NOSTR_SEC_KEY')
-    SEC = os.getenv('NOSTR_SEC_KEY') 
-    RELAY = os.getenv('NOSTR_RELAY')
-    command = rf'nostril --envelope --sec "{SEC}" --content "{content}" | websocat {RELAY} > /dev/null'
-    plugin.log(command)
-    os.system(command)
+    command = f'nostril --envelope --sec "{plugin.nostr_key}" --content "{content}" | websocat {plugin.nostr_relay} > /dev/null'
+    os.system(command)#
 
 
 @plugin.init()
@@ -31,7 +28,7 @@ def on_channel_opened(plugin, channel_opened, **kwargs):
 		funding txid: {funding_txid}
 		channel ready: {channel_ready}
 	""".format(**channel_opened)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_open_failed")
@@ -40,7 +37,7 @@ def on_channel_open_failed(plugin, channel_open_failed, **kwargs):
     content = """
 	    Received channel_open_failed event for channel id: {channel_id}
 	""".format(**channel_open_failed)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_state_changed")
@@ -56,7 +53,7 @@ def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
 	    cause: {cause}
 	    message: {message}
 	""".format(**channel_state_changed)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("connect")
@@ -65,7 +62,7 @@ def on_connect(plugin, id, address, **kwargs):
     content = f"""
         Received connect event for peer: {id}
     """
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("disconnect")
@@ -74,7 +71,7 @@ def on_disconnect(plugin, id, **kwargs):
     content = f"""
         Received disconnect event for peer: {id}
     """
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_payment")
@@ -84,18 +81,18 @@ def on_payment(plugin, invoice_payment, **kwargs):
         Received invoice_payment event for label: {label}
         preimage: {preimage}
     """.format(**invoice_payment)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_creation")
 def on_invoice_creation(plugin, invoice_creation, **kwargs):
     """ Responds to invoice_creation event """
-    #content = """
-    #    Received invoice_creation event for label: {label}
-    #    preimage: {preimage}
-    #    amount: {msat}
-    #""".format(**invoice_creation)
-    send_nostr_event("hi")
+    content = """
+        Received invoice_creation event for label: {label}
+        preimage: {preimage}
+        amount: {msat}
+    """.format(**invoice_creation)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("warning")
@@ -106,8 +103,8 @@ def on_warning(plugin, warning, **kwargs):
         time: {time}
         source: {source}
         log: {log}
-    """
-    send_nostr_event(content)
+    """.format(**warning)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("forward_event")
@@ -123,8 +120,8 @@ def on_forward_event(plugin, forward_event, **kwargs):
         status: {status}
         received time: {received_time}
         resolved time: {resolved_time}
-    """
-    send_nostr_event(content)
+    """.format(**forward_event)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_success")
@@ -140,7 +137,7 @@ def on_sendpay_success(plugin, sendpay_success, **kwargs):
         status: {status}
         payment preimage: {payment_preimage}
     """.format(**sendpay_success)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_failure")
@@ -151,7 +148,7 @@ def on_sendpay_failure(plugin, sendpay_failure, **kwargs):
         message: {message}
         data: {data}
     """.format(**sendpay_failure)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("coin_movement")
@@ -178,7 +175,7 @@ def on_coin_movement(plugin, coin_movement, **kwargs):
         timestamp: {timestamp}
         coin type: {coin_type}
     """.format(**coin_movement)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("balance_snapshot")
@@ -187,7 +184,7 @@ def on_balance_snapshot(plugin, balance_snapshots, **kwargs):
     content = f"""
         Received a balance snapshot event: {balance_snapshots}
     """
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("openchannel_peer_sigs")
@@ -197,13 +194,24 @@ def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
     Received a openchannel peer sigs event with channel id: {channel_id}
     signed psbt: {signed_psbt}
     """.format(**openchannel_peer_sigs)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
-@plugin.subscribe("shutdown")
+@plugin.subscribe("set-nostr-relay")
 def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
+@plugin.method("set-nostr-relay")
+def set_relay(plugin, relay, **kwargs):
+    """ This method sets the Nostr relay for sending events """
+    plugin.nostr_relay = relay 
+    return f"Stored relay: {relay}"
+
+@plugin.method("set-nostr-key")
+def set_key(plugin, key, **kwargs):
+    """ This method sets the Nostr key for sending events """
+    plugin.nostr_key = key
+    return f"Stored key: {key}"
 
 plugin.run()
