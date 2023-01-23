@@ -1,3 +1,0 @@
-[Main]
-secret = <your secret here>
-relay = <preferred relay here>
