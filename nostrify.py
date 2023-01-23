@@ -200,7 +200,7 @@ def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
 @plugin.subscribe("set-nostr-relay")
 def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
-    send_nostr_event("Received a shutdown event")
+    send_nostr_event("Received a shutdown event", plugin)
 
 @plugin.method("set-nostr-relay")
 def set_relay(plugin, relay, **kwargs):
