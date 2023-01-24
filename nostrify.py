@@ -17,6 +17,8 @@ def send_nostr_event(content, plugin):
 @plugin.init()
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
+    plugin.nostr_key = os.getenv('NOSTR_SECRET_KEY')
+    plugin.nostr_relay = os.getenv('NOSTR_RELAY')
     plugin.log("Plugin nostrify initialized")
 
 @plugin.subscribe("channel_opened")
@@ -174,16 +176,16 @@ def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event", plugin)
 
-@plugin.method("set-nostr-relay")
-def set_relay(plugin, relay, **kwargs):
-    """ This method sets the Nostr relay for sending events """
-    plugin.nostr_relay = relay 
-    return f"Stored relay: {relay}"
-
-@plugin.method("set-nostr-key")
-def set_key(plugin, key, **kwargs):
-    """ This method sets the Nostr key for sending events """
-    plugin.nostr_key = key
-    return f"Stored key: {key}"
+#@plugin.method("set-nostr-relay")
+#def set_relay(plugin, relay, **kwargs):
+#    """ This method sets the Nostr relay for sending events """
+#    plugin.nostr_relay = relay 
+#    return f"Stored relay: {relay}"
+#
+#@plugin.method("set-nostr-key")
+#def set_key(plugin, key, **kwargs):
+#    """ This method sets the Nostr key for sending events """
+#    plugin.nostr_key = key
+#    return f"Stored key: {key}"
 
 plugin.run()
