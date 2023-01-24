@@ -2,14 +2,18 @@
 
 # pylint: disable=consider-using-f-string
 
-import os
+import os, configparser
 import configparser
 from pyln.client import Plugin
 
 plugin = Plugin()
+config = configparser.ConfigParser()
 
 def send_nostr_event(content, plugin):
     """ Sends `content` as a Nostr Event"""
+    config.read('nostr.config')
+    plugin.nostr_key = config.get('Main', 'secret')
+    plugin.nostr_relay = config.get('Main', 'relay')
     command = f'nostril --envelope --sec "{plugin.nostr_key}" --content "{content}" | websocat {plugin.nostr_relay} > /dev/null'
     os.system(command)
 
@@ -17,8 +21,6 @@ def send_nostr_event(content, plugin):
 @plugin.init()
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
-    plugin.nostr_key = os.getenv('NOSTR_SECRET_KEY')
-    plugin.nostr_relay = os.getenv('NOSTR_RELAY')
     plugin.log("Plugin nostrify initialized")
 
 @plugin.subscribe("channel_opened")
