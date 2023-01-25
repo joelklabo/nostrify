@@ -173,10 +173,10 @@ def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
     """ Responds to openchannel_peer_sigs event """
     content = """Received a openchannel peer sigs event with channel id: {channel_id}
     signed psbt: {signed_psbt}""".format(**openchannel_peer_sigs)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
-@plugin.subscribe("set-nostr-relay")
+@plugin.subscribe("shutdown")
 def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
