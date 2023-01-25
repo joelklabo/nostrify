@@ -9,10 +9,7 @@ plugin = Plugin()
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
-    os.environ.get('NOSTR_SEC_KEY')
-    SEC = os.getenv('NOSTR_SEC_KEY') 
-    RELAY = os.getenv('NOSTR_RELAY')
-    command = rf'nostril --envelope --sec "{SEC}" --content "{content}" | websocat {RELAY} > /dev/null'
+    command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
     plugin.log(command)
     os.system(command)
 
@@ -20,6 +17,14 @@ def send_nostr_event(content):
 @plugin.init()
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
+   
+    plugin.secret = plugin.get_option('secret')
+    plugin.relay = plugin.get_option('relay')
+    
+    if plugin.secret is None:
+        plugin.log("Must pass a `secret` option for creating events")
+        return
+
     plugin.log("Plugin nostrify initialized")
 
 @plugin.subscribe("channel_opened")
@@ -205,5 +210,7 @@ def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
+plugin.add_option('secret', '', 'The nostr private key for authoring events')
+plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
 plugin.run()
