@@ -7,7 +7,7 @@ from pyln.client import Plugin
 
 plugin = Plugin()
 
-def send_nostr_event(content):
+def send_nostr_event(content, plugin):
     """ Sends `content` as a Nostr Event"""
     command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
     plugin.log(command)
@@ -33,14 +33,14 @@ def on_channel_opened(plugin, channel_opened, **kwargs):
 	funding msat: {funding_msat}	
 	funding txid: {funding_txid}
 	channel ready: {channel_ready}""".format(**channel_opened)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_open_failed")
 def on_channel_open_failed(plugin, channel_open_failed, **kwargs):
     """ Responds to channel_open_failed event """
     content = """Received channel_open_failed event for channel id: {channel_id}""".format(**channel_open_failed)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_state_changed")
@@ -54,21 +54,21 @@ def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
 	new state: {new_state}
 	cause: {cause}
 	message: {message}""".format(**channel_state_changed)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("connect")
 def on_connect(plugin, id, address, **kwargs):
     """ Responds to connect event """
     content = f"Received connect event for peer: {id}"
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("disconnect")
 def on_disconnect(plugin, id, **kwargs):
     """ Responds to disconnect event """
     content = f"Received disconnect event for peer: {id}"
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_payment")
@@ -76,7 +76,7 @@ def on_payment(plugin, invoice_payment, **kwargs):
     """ Responds to invoice_payment event """
     content = """Received invoice_payment event for label: {label}
     preimage: {preimage}""".format(**invoice_payment)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_creation")
@@ -85,7 +85,7 @@ def on_invoice_creation(plugin, invoice_creation, **kwargs):
     content = """Received invoice_creation event for label: {label}
     preimage: {preimage}
     amount: {msat}""".format(**invoice_creation)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("warning")
@@ -95,7 +95,7 @@ def on_warning(plugin, warning, **kwargs):
     time: {time}
     source: {source}
     log: {log}""".format(**warning)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("forward_event")
@@ -110,7 +110,7 @@ def on_forward_event(plugin, forward_event, **kwargs):
     status: {status}
     received time: {received_time}
     resolved time: {resolved_time}""".format(**forward_event)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_success")
@@ -124,7 +124,7 @@ def on_sendpay_success(plugin, sendpay_success, **kwargs):
     created at: {created_at}
     status: {status}
     payment preimage: {payment_preimage}""".format(**sendpay_success)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_failure")
@@ -133,7 +133,7 @@ def on_sendpay_failure(plugin, sendpay_failure, **kwargs):
     content = """Received a sendpay failure event with code: {code}
     message: {message}
     data: {data}""".format(**sendpay_failure)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("coin_movement")
@@ -158,14 +158,14 @@ def on_coin_movement(plugin, coin_movement, **kwargs):
     blockheight: {blockheight}
     timestamp: {timestamp}
     coin type: {coin_type}""".format(**coin_movement)
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("balance_snapshot")
 def on_balance_snapshot(plugin, balance_snapshots, **kwargs):
     """ Responds to coin_movement event """
     content = f"Received a balance snapshot event: {balance_snapshots}"
-    send_nostr_event(content)
+    send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("openchannel_peer_sigs")
