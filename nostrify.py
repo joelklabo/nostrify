@@ -13,7 +13,7 @@ def send_nostr_event(content, plugin):
     plugin.log(command)
     os.system(command)
 
-
+@plugin.init()
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
    
