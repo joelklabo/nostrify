@@ -9,7 +9,11 @@ plugin = Plugin()
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
-    command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+    if plugin.recipient is '':
+        command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+    else:
+        command = rf'nostril --envelope --dm "{plugin.recipient}" --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+
     plugin.log(command)
     os.system(command)
 
@@ -19,6 +23,7 @@ def init(options, configuration, plugin, **kwargs):
    
     plugin.secret = plugin.get_option('secret')
     plugin.relay = plugin.get_option('relay')
+    plugin.recipient = plugin.get_option('recipient')
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
@@ -183,5 +188,6 @@ def on_shutdown(plugin, **kwargs):
 
 plugin.add_option('secret', '', 'The nostr private key for authoring events')
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('recipient', '', 'The nostr account you want to DM notes to')
 
 plugin.run()
