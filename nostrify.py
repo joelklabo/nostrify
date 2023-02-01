@@ -9,10 +9,10 @@ plugin = Plugin()
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
-    if plugin.recipient is '':
-        command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+    if plugin.nostr_receiver == '':
+        command = rf'nostril --envelope --sec "{plugin.nostr_secret}" --content "{content}" | websocat {plugin.nost_relay} > /dev/null'
     else:
-        command = rf'nostril --envelope --dm "{plugin.recipient}" --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+        command = rf'nostril --envelope --dm "{plugin.nostr_receiver}" --sec "{plugin.nostr_secret}" --content "{content}" | websocat {plugin.nostr_relay} > /dev/null'
 
     plugin.log(command)
     os.system(command)
@@ -186,8 +186,8 @@ def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
-plugin.add_option('secret', '', 'The nostr private key for authoring events')
-plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
-plugin.add_option('recipient', '', 'The nostr account you want to DM notes to')
+plugin.add_option('nostr_secret', '', 'The nostr private key for authoring events')
+plugin.add_option('nostr_relays', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_receiver', '', 'The nostr account you want to DM notes to')
 
 plugin.run()
