@@ -178,7 +178,7 @@ def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
 @plugin.subscribe("shutdown")
 def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
-    send_nostr_event("Received a shutdown event")
+    send_nostr_event("Received a shutdown event", plugin)
 
 plugin.add_option('secret', '', 'The nostr private key for authoring events')
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
