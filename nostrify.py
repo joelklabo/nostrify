@@ -16,8 +16,8 @@ def send_nostr_event(content, plugin):
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
    
-    plugin.secret = plugin.get_option('secret')
-    plugin.relay = plugin.get_option('relay')
+    plugin.secret = plugin.get_option('nostr_secret')
+    plugin.relay = plugin.get_option('nostr_relay')
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
@@ -180,7 +180,7 @@ def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event", plugin)
 
-plugin.add_option('secret', '', 'The nostr private key for authoring events')
-plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_secret', '', 'The nostr private key for authoring events')
+plugin.add_option('nostr_relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
 plugin.run()
