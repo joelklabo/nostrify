@@ -1,4 +1,4 @@
-# nostrify
+# Nostrify
 Core Lightning plugin that sends events to Nostr
 
 Requires `nostril` for creating Nostr events and `websocat` for sending over web socket.
