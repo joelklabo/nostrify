@@ -16,7 +16,10 @@ def send_nostr_event(content, plugin):
 def init(options, configuration, plugin, **kwargs):
     """ Initializes the plugin """
    
-    plugin.secret = plugin.rpc.makesecret('nostr')
+    secret = plugin.rpc.makesecret('nostr')
+    plugin.log(secret)
+    plugin.secret = secret
+
     plugin.relay = plugin.get_option('relay')
     
     if plugin.secret is None:
