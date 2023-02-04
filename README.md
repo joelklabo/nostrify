@@ -5,7 +5,7 @@ Core Lightning plugin that sends events to Nostr
 
 Requires [`nostril`](https://github.com/jb55/nostril/tree/master) for creating Nostr events and [`websocat`](https://github.com/vi/websocat) for sending over web socket.
 
-By default `Nostrify` uses `lightning-cli makesecret string=nosrt` to generate a Nostr key for you. This generates a psuedorandom secret based off of your `HSM_secret`.
+By default `Nostrify` uses `lightning-cli makesecret string=nostr` to generate a Nostr key for you. This generates a psuedorandom secret based off of your `HSM_secret`.
 
 See the documentation for `makesecret` [here](https://lightning.readthedocs.io/lightning-makesecret.7.html?highlight=makesecret)
 
