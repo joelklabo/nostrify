@@ -18,8 +18,8 @@ def init(options, configuration, plugin, **kwargs):
    
     secret = plugin.rpc.makesecret(string='nostr')['secret']
     plugin.secret = secret
-
     plugin.relay = plugin.get_option('relay')
+    plugin.silence_connection_events = False
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
@@ -61,15 +61,17 @@ def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
 @plugin.subscribe("connect")
 def on_connect(plugin, id, address, **kwargs):
     """ Responds to connect event """
-    content = f"Received connect event for peer: {id}"
-    send_nostr_event(content, plugin)
+    if plugin.silence_connection_events is False:
+        content = f"Received connect event for peer: {id}"
+        send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("disconnect")
 def on_disconnect(plugin, id, **kwargs):
     """ Responds to disconnect event """
-    content = f"Received disconnect event for peer: {id}"
-    send_nostr_event(content, plugin)
+    if plugin.silence_connection_events is False:
+        content = f"Received disconnect event for peer: {id}"
+        send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_payment")
@@ -181,6 +183,16 @@ def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
 def on_shutdown(plugin, **kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event", plugin)
+
+@plugin.method("silence_connections", long_desc="Stop sending connect and disconnect events")
+def silence_connections(plugin):
+    """ Stop sending connect and disconnect events """
+    plugin.silence_connection_events = True
+
+@plugin.method("observe_connections", long_desc="Resume sending connect and disconnect events")
+def observe_connections(plugin):
+    """ Resume sending connect and disconnect events """
+    plugin.silence_connection_events = False
 
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
