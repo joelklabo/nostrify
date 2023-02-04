@@ -1,5 +1,5 @@
 # Nostrify
-Core Lightning plugin that sends events to Nostr
+Core Lightning plugin that sends events to Nostr (**requires CLN 22**)
 
 # Quickstart
 
