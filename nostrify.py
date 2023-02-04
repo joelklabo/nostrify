@@ -188,11 +188,13 @@ def on_shutdown(plugin, **kwargs):
 def silence_connections(plugin):
     """ Stop sending connect and disconnect events """
     plugin.silence_connection_events = True
+    plugin.log("Silenced connection events")
 
 @plugin.method("observe_connections", long_desc="Resume sending connect and disconnect events")
 def observe_connections(plugin):
     """ Resume sending connect and disconnect events """
     plugin.silence_connection_events = False
+    plugin.log("Resume sending connection events")
 
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
