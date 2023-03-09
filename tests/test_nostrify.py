@@ -35,12 +35,14 @@ def test_connect_event_is_observed(node_factory):
 @unittest.skipIf(not DEVELOPER, "Too slow without fast gossip")
 def test_channel_opened_event_is_observed(node_factory): # NEED TO CATCH KEY ERROR EXCEPTION
     """ Tests that a channel open event is observed """
+   
     node_1 = node_factory.get_node(options={'plugin': plugin_path})
     node_2 = node_factory.get_node()
+    
     node_factory.join_nodes([node_1, node_2], fundamount=10**6, wait_for_announce=True)
 
-    node_1.rpc.connect(node_2.info["id"], "localhost", node_2.port)
-    node_1.daemon.wait_for_log(f"Received connect event for peer: {node_2.info['id']}")
-    node_1.rpc.fundchannel(node_2.info["id"], 10**6)
-    node_1.daemon.wait_for_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
-    node_1.daemon.wait_for_log(f"Received channel_opened event with id: {node_2.info['id']}") 
+    assert not node_1.daemon.is_in_log("KeyError")
+
+    assert node_1.daemon.is_in_log(f"Received channel_opened event with id: {node_2.info['id']}")
+    assert node_1.daemon.is_in_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
+    assert node_1.daemon.is_in_log(f"Received connect event for peer: {node_2.info['id']}")
