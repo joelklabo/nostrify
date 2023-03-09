@@ -21,7 +21,25 @@ def test_nostrify_starts(node_factory):
                              "Plugin nostrify initialized"])
     l1.rpc.plugin_stop(plugin_path)
 
-#def test_your_plugin(node_factory, bitcoind):
-#    l1 = node_factory.get_node(options=pluginopt)
-#    s = l1.rpc.getinfo()
-#    assert(s['network'] == 'regtest') # or whatever you want to test
+def test_connect_event_is_observed(node_factory):
+    l1_opts = {
+        "plugin": plugin_path,
+    }
+
+    l1, l2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
+
+    l1.daemon.wait_for_log("Received connect event for peer: {}".format(l2.info["id"]))
+
+def test_channel_opened_event_is_observed(node_factory):
+    l1_opts = {
+        "plugin": plugin_path,
+    }
+    l1 = node_factory.get_node(options=l1_opts)
+    l2 = node_factory.get_node()
+    node_factory.join_nodes([l1, l2], fundamount=10**6, wait_for_announce=True)
+
+    l1.rpc.connect(l2.info["id"], "localhost", l2.port)
+    l1.daemon.wait_for_log("Received connect event for peer: {}".format(l2.info["id"]))
+    l1.rpc.fundchannel(l2.info["id"], 10**6)
+
+    l1.daemon.wait_for_log("Received channel_opened event with id: {}".format(l2.info["id"]))
