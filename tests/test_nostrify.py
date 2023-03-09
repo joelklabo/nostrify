@@ -1,6 +1,7 @@
 from pyln.testing.fixtures import *
 
-plugin_path = os.path.join(os.path.dirname(__file__), "nostrify.py")
+test_path = os.path.dirname(__file__)
+plugin_path = os.path.join(test_path, '..', 'src', 'plugin.py')
 
 def test_nostrify_starts(node_factory):
     l1 = node_factory.get_node()
