@@ -1,46 +1,46 @@
+import os
+import unittest
 from pyln.testing.fixtures import *
+from pyln.testing.utils import DEVELOPER
 
 test_path = os.path.dirname(__file__)
-plugin_path = os.path.join(test_path, '..', 'src', 'plugin.py')
+plugin_path = os.path.join(test_path, '..', 'src', 'nostrify.py')
 
 def test_nostrify_starts(node_factory):
-    l1 = node_factory.get_node()
+    """ Tests that nostrify starts dynamically and statically """
+    node_1 = node_factory.get_node()
     # Test dynamically
-    l1.rpc.plugin_start(plugin_path)
-    l1.daemon.wait_for_log("Plugin nostrify initialized")
-    l1.rpc.plugin_stop(plugin_path)
-    l1.rpc.plugin_start(plugin_path)
-    l1.daemon.wait_for_log("Plugin nostrify initialized")
-    l1.stop()
+    node_1.rpc.plugin_start(plugin_path)
+    node_1.daemon.wait_for_log("Plugin nostrify initialized")
+    node_1.rpc.plugin_stop(plugin_path)
+    node_1.rpc.plugin_start(plugin_path)
+    node_1.daemon.wait_for_log("Plugin nostrify initialized")
+    node_1.stop()
     # Then statically
-    l1.daemon.opts["plugin"] = plugin_path
-    l1.start()
+    node_1.daemon.opts["plugin"] = plugin_path
+    node_1.start()
     # Start at 0 and 're-await' the two inits above. Otherwise this is flaky.
-    l1.daemon.logsearch_start = 0
-    l1.daemon.wait_for_logs(["Plugin nostrify initialized",
+    node_1.daemon.logsearch_start = 0
+    node_1.daemon.wait_for_logs(["Plugin nostrify initialized",
                              "Plugin nostrify initialized",
                              "Plugin nostrify initialized"])
-    l1.rpc.plugin_stop(plugin_path)
+    node_1.rpc.plugin_stop(plugin_path)
 
 def test_connect_event_is_observed(node_factory):
-    l1_opts = {
-        "plugin": plugin_path,
-    }
+    """ Tests that a connect event is observed """
 
-    l1, l2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
+    node_1, node_2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
+    node_1.daemon.wait_for_log(f"Received connect event for peer: {node_2.info['id']}")
 
-    l1.daemon.wait_for_log("Received connect event for peer: {}".format(l2.info["id"]))
+@unittest.skipIf(not DEVELOPER, "Too slow without fast gossip")
+def test_channel_opened_event_is_observed(node_factory): # NEED TO CATCH KEY ERROR EXCEPTION
+    """ Tests that a channel open event is observed """
+    node_1 = node_factory.get_node(options={'plugin': plugin_path})
+    node_2 = node_factory.get_node()
+    node_factory.join_nodes([node_1, node_2], fundamount=10**6, wait_for_announce=True)
 
-def test_channel_opened_event_is_observed(node_factory):
-    l1_opts = {
-        "plugin": plugin_path,
-    }
-    l1 = node_factory.get_node(options=l1_opts)
-    l2 = node_factory.get_node()
-    node_factory.join_nodes([l1, l2], fundamount=10**6, wait_for_announce=True)
-
-    l1.rpc.connect(l2.info["id"], "localhost", l2.port)
-    l1.daemon.wait_for_log("Received connect event for peer: {}".format(l2.info["id"]))
-    l1.rpc.fundchannel(l2.info["id"], 10**6)
-
-    l1.daemon.wait_for_log("Received channel_opened event with id: {}".format(l2.info["id"]))
+    node_1.rpc.connect(node_2.info["id"], "localhost", node_2.port)
+    node_1.daemon.wait_for_log(f"Received connect event for peer: {node_2.info['id']}")
+    node_1.rpc.fundchannel(node_2.info["id"], 10**6)
+    node_1.daemon.wait_for_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
+    node_1.daemon.wait_for_log(f"Received channel_opened event with id: {node_2.info['id']}") 

@@ -14,7 +14,7 @@ RUN git clone --recursive https://github.com/ElementsProject/lightning.git /tmp/
 WORKDIR /tmp/lightning
 RUN git checkout $LIGHTNINGD_VERSION
 RUN ./configure --prefix=/tmp/lightning_install --enable-developer --disable-valgrind --enable-experimental-features
-RUN make install
+RUN make -j $(nproc) install
 
 FROM ubuntu:latest as final
 
