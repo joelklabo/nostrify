@@ -11,6 +11,7 @@ on:
 
 jobs:
   build-and-test:
+    name: Pytest Suite
     runs-on: ubuntu-latest
 
     steps:
