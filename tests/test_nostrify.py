@@ -42,6 +42,6 @@ def test_channel_opened_event_is_observed(node_factory): # NEED TO CATCH KEY ERR
 
     assert not node_1.daemon.is_in_log("KeyError")
 
-    assert node_1.daemon.is_in_log(f"Received channel_opened event with id: {node_2.info['id']}")
     assert node_1.daemon.is_in_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
     assert node_1.daemon.is_in_log(f"Received connect event for peer: {node_2.info['id']}")
+    assert node_1.daemon.is_in_log(f"Received channel_opened event with id: {node_2.info['id']}")
