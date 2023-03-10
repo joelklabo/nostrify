@@ -32,7 +32,6 @@ def test_connect_event_is_observed(node_factory):
     node_1, node_2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
     node_1.daemon.wait_for_log(f"Received connect event for peer: {node_2.info['id']}")
 
-@unittest.skipIf(not DEVELOPER, "Too slow without fast gossip")
 def test_channel_opened_event_is_observed(node_factory): # NEED TO CATCH KEY ERROR EXCEPTION
     """ Tests that a channel open event is observed """
    
