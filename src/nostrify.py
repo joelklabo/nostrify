@@ -7,14 +7,14 @@ from pyln.client import Plugin
 
 plugin = Plugin()
 
-def send_nostr_event(content, plugin):
+def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
     command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
     plugin.log(content)
     #os.system(command)
 
 @plugin.init()
-def init(options, configuration, plugin, **kwargs):
+def init(options, configuration, **kwargs):
     """ Initializes the plugin """
    
     secret = plugin.rpc.makesecret(string='nostr')['secret']
@@ -29,24 +29,24 @@ def init(options, configuration, plugin, **kwargs):
     plugin.log("Plugin nostrify initialized")
 
 @plugin.subscribe("channel_opened")
-def on_channel_opened(plugin, channel_opened, **kwargs):
+def on_channel_opened(channel_opened, **kwargs):
     """ Responds to channel_opened event """
     content = f"""Received channel_opened event with id: {channel_opened.get('id', 'unknown')}
     funding msat: {channel_opened.get('funding_msat', 'unknown')}
     funding txid: {channel_opened.get('funding_txid', 'unknown')}
     channel ready: {channel_opened.get('channel_ready', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("channel_open_failed")
-def on_channel_open_failed(plugin, channel_open_failed, **kwargs):
+def on_channel_open_failed(channel_open_failed, **kwargs):
     """ Responds to channel_open_failed event """
     content = f"""Received channel_open_failed event for channel id: {channel_open_failed.get('channel_id', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("channel_state_changed")
-def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
+def on_channel_state_changed(channel_state_changed, **kwargs):
     """ Responds to channel_state_changed event """
     content = f"""Received channel_state_changed event for peer id: {channel_state_changed.get('peer_id', 'unknown')}
     channel id: {channel_state_changed.get('channel_id', 'unknown')}
@@ -56,52 +56,52 @@ def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
     new state: {channel_state_changed.get('new_state', 'unknown')}
     cause: {channel_state_changed.get('cause', 'unknown')}
     message: {channel_state_changed.get('message', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("connect")
-def on_connect(plugin, id, address, **kwargs):
+def on_connect(id, address, **kwargs):
     """ Responds to connect event """
     content = f"Received connect event for peer: {id}"
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("disconnect")
-def on_disconnect(plugin, id, **kwargs):
+def on_disconnect(id, **kwargs):
     """ Responds to disconnect event """
     content = f"Received disconnect event for peer: {id}"
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("invoice_payment")
-def on_payment(plugin, invoice_payment, **kwargs):
+def on_payment(invoice_payment, **kwargs):
     """ Responds to invoice_payment event """
     content = f"""Received invoice_payment event for label: {invoice_payment.get('label', 'unknown')}
     preimage: {invoice_payment.get('preimage', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("invoice_creation")
-def on_invoice_creation(plugin, invoice_creation, **kwargs):
+def on_invoice_creation(invoice_creation, **kwargs):
     """ Responds to invoice_creation event """
     content = f"""Received invoice_creation event for label: {invoice_creation.get('label', 'unknown')}
     preimage: {invoice_creation.get('preimage', 'unknown')}
     amount: {invoice_creation.get('msat', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("warning")
-def on_warning(plugin, warning, **kwargs):
+def on_warning(warning, **kwargs):
     """ Responds to warning event """
     content = f"""Received warning event with level: {warning.get('level', 'unknown')}
     time: {warning.get('time', 'unknown')}
     source: {warning.get('source', 'unknown')}
     log: {warning.get('log', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("forward_event")
-def on_forward_event(plugin, forward_event, **kwargs):
+def on_forward_event(forward_event, **kwargs):
     """ Responds to forward_event event """
     content = f"""Received a forward event with payment hash: {forward_event.get('payment_hash', 'unknown')}
     in channel: {forward_event.get('in_channel', 'unknown')}
@@ -112,11 +112,11 @@ def on_forward_event(plugin, forward_event, **kwargs):
     status: {forward_event.get('status', 'unknown')}
     received time: {forward_event.get('received_time', 'unknown')}
     resolved time: {forward_event.get('resolved_time', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("sendpay_success")
-def on_sendpay_success(plugin, sendpay_success, **kwargs):
+def on_sendpay_success(sendpay_success, **kwargs):
     """ Responds to sendpay_success event """
     content = f"""Received a sendpay success event with id: {sendpay_success.get('id', 'unknown')}
     payment hash: {sendpay_success.get('payment_hash', 'unknown')}
@@ -126,20 +126,20 @@ def on_sendpay_success(plugin, sendpay_success, **kwargs):
     created at: {sendpay_success.get('created_at', 'unknown')}
     status: {sendpay_success.get('status', 'unknown')}
     payment preimage: {sendpay_success.get('payment_preimage', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("sendpay_failure")
-def on_sendpay_failure(plugin, sendpay_failure, **kwargs):
+def on_sendpay_failure(sendpay_failure, **kwargs):
     """ Responds to sendpay_success event """
     content = f"""Received a sendpay failure event with code: {sendpay_failure['code']}
     message: {sendpay_failure['message']}
     data: {sendpay_failure['data']}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("coin_movement")
-def on_coin_movement(plugin, coin_movement, **kwargs):
+def on_coin_movement(coin_movement, **kwargs):
     """ Responds to coin_movement event """
     content = f"""Received a coin movement event with version: {coin_movement.get('version', 'unknown')}
     node id: {coin_movement.get('node_id', 'unknown')}
@@ -160,28 +160,28 @@ def on_coin_movement(plugin, coin_movement, **kwargs):
     blockheight: {coin_movement.get('blockheight', 'unknown')}
     timestamp: {coin_movement.get('timestamp', 'unknown')}
     coin type: {coin_movement.get('coin_type', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("balance_snapshot")
-def on_balance_snapshot(plugin, balance_snapshots, **kwargs):
+def on_balance_snapshot(balance_snapshots, **kwargs):
     """ Responds to coin_movement event """
     content = f"Received a balance snapshot event: {balance_snapshots}"
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("openchannel_peer_sigs")
-def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
+def on_openchannel_peer_sigs(openchannel_peer_sigs, **kwargs):
     """ Responds to openchannel_peer_sigs event """
     content = f"""Received an openchannel peer sigs event with channel id: {openchannel_peer_sigs.get('channel_id', 'unknown')}
     signed psbt: {openchannel_peer_sigs.get('signed_psbt', 'unknown')}"""
-    send_nostr_event(content, plugin)
+    send_nostr_event(content)
 
 
 @plugin.subscribe("shutdown")
-def on_shutdown(plugin, **kwargs):
+def on_shutdown(**kwargs):
     """ Responds to shutdown event """
-    send_nostr_event("Received a shutdown event", plugin)
+    send_nostr_event("Received a shutdown event")
 
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
