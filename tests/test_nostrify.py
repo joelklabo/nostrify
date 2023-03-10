@@ -26,13 +26,19 @@ def test_nostrify_starts(node_factory):
                              "Plugin nostrify initialized"])
     node_1.rpc.plugin_stop(plugin_path)
 
+def test_secret_exists(node_factory):
+    """ Tests that a secret is available to nostrify """
+    node_1 = node_factory.get_node(options={'plugin': plugin_path})
+
+    assert not node_1.daemon.is_in_log("Must pass a `secret` option for creating events")
+
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
     
     node_1, node_2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
 
     assert not node_1.daemon.is_in_log("KeyError")
-    
+
     assert node_1.daemon.is_in_log(f"Received connect event for peer: {node_2.info['id']}")
 
 def test_channel_opened_event_is_observed(node_factory):
