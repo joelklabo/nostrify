@@ -1,0 +1,24 @@
+name: CI Tests 
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t cl-test .
+
+    - name: Test Docker image
+      run: docker run -ti -v $(pwd):/build cl-test
