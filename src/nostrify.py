@@ -11,7 +11,7 @@ def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
     command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
     plugin.log(content)
-    os.system(command)
+    #os.system(command)
 
 @plugin.init()
 def init(options, configuration, **kwargs):
