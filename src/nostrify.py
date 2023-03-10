@@ -141,25 +141,25 @@ def on_sendpay_failure(plugin, sendpay_failure, **kwargs):
 @plugin.subscribe("coin_movement")
 def on_coin_movement(plugin, coin_movement, **kwargs):
     """ Responds to coin_movement event """
-    content = """Received a coin movement event with version: {version}
-    node id: {node_id}
-    type: {type}
-    account id: {account_id}
-    originating account: {originating_account}
-    txid: {txid}
-    utxo txid: {utxo_txid}
-    vout: {vout}
-    payment hash: {payment_hash}
-    part id: {part_id}
-    credit msat: {credit_msat}
-    debit msat: {debit_msat}
-    output msat: {output_msat}
-    output count: {output_count}
-    fee msat: {fee_msat}
-    tags: {tags}
-    blockheight: {blockheight}
-    timestamp: {timestamp}
-    coin type: {coin_type}""".format(**coin_movement)
+    content = f"""Received a coin movement event with version: {coin_movement.get('version', 'unknown')}
+    node id: {coin_movement.get('node_id', 'unknown')}
+    type: {coin_movement.get('type', 'unknown')}
+    account id: {coin_movement.get('account_id', 'unknown')}
+    originating account: {coin_movement.get('originating_account', 'unknown')}
+    txid: {coin_movement.get('txid', 'unknown')}
+    utxo txid: {coin_movement.get('utxo_txid', 'unknown')}
+    vout: {coin_movement.get('vout', 'unknown')}
+    payment hash: {coin_movement.get('payment_hash', 'unknown')}
+    part id: {coin_movement.get('part_id', 'unknown')}
+    credit msat: {coin_movement.get('credit_msat', 'unknown')}
+    debit msat: {coin_movement.get('debit_msat', 'unknown')}
+    output msat: {coin_movement.get('output_msat', 'unknown')}
+    output count: {coin_movement.get('output_count', 'unknown')}
+    fee msat: {coin_movement.get('fee_msat', 'unknown')}
+    tags: {coin_movement.get('tags', 'unknown')}
+    blockheight: {coin_movement.get('blockheight', 'unknown')}
+    timestamp: {coin_movement.get('timestamp', 'unknown')}
+    coin type: {coin_movement.get('coin_type', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
