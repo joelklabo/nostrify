@@ -1,3 +1,5 @@
+[![CI Tests](https://github.com/joelklabo/nostrify/actions/workflows/ci.yml/badge.svg)](https://github.com/joelklabo/nostrify/actions/workflows/ci.yml)
+
 # Nostrify
 Core Lightning plugin that sends events to Nostr (**requires CLN 22**)
 
