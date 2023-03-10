@@ -31,31 +31,31 @@ def init(options, configuration, plugin, **kwargs):
 @plugin.subscribe("channel_opened")
 def on_channel_opened(plugin, channel_opened, **kwargs):
     """ Responds to channel_opened event """
-    content = """Received channel_opened event with id: {id}
-	funding msat: {funding_msat}	
-	funding txid: {funding_txid}
-	channel ready: {channel_ready}""".format(**channel_opened)
+    content = f"""Received channel_opened event with id: {channel_opened.get('id', 'unknown')}
+    funding msat: {channel_opened.get('funding_msat', 'unknown')}
+    funding txid: {channel_opened.get('funding_txid', 'unknown')}
+    channel ready: {channel_opened.get('channel_ready', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_open_failed")
 def on_channel_open_failed(plugin, channel_open_failed, **kwargs):
     """ Responds to channel_open_failed event """
-    content = """Received channel_open_failed event for channel id: {channel_id}""".format(**channel_open_failed)
+    content = f"""Received channel_open_failed event for channel id: {channel_open_failed.get('channel_id', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("channel_state_changed")
 def on_channel_state_changed(plugin, channel_state_changed, **kwargs):
     """ Responds to channel_state_changed event """
-    content = """Received channel_state_changed event for peer id: {peer_id}
-	channel id: {channel_id}
-	short channel id: {short_channel_id}
-	timestamp: {timestamp}
-	old state: {old_state}
-	new state: {new_state}
-	cause: {cause}
-	message: {message}""".format(**channel_state_changed)
+    content = f"""Received channel_state_changed event for peer id: {channel_state_changed.get('peer_id', 'unknown')}
+    channel id: {channel_state_changed.get('channel_id', 'unknown')}
+    short channel id: {channel_state_changed.get('short_channel_id', 'unknown')}
+    timestamp: {channel_state_changed.get('timestamp', 'unknown')}
+    old state: {channel_state_changed.get('old_state', 'unknown')}
+    new state: {channel_state_changed.get('new_state', 'unknown')}
+    cause: {channel_state_changed.get('cause', 'unknown')}
+    message: {channel_state_changed.get('message', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
@@ -76,65 +76,65 @@ def on_disconnect(plugin, id, **kwargs):
 @plugin.subscribe("invoice_payment")
 def on_payment(plugin, invoice_payment, **kwargs):
     """ Responds to invoice_payment event """
-    content = """Received invoice_payment event for label: {label}
-    preimage: {preimage}""".format(**invoice_payment)
+    content = f"""Received invoice_payment event for label: {invoice_payment.get('label', 'unknown')}
+    preimage: {invoice_payment.get('preimage', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("invoice_creation")
 def on_invoice_creation(plugin, invoice_creation, **kwargs):
     """ Responds to invoice_creation event """
-    content = """Received invoice_creation event for label: {label}
-    preimage: {preimage}
-    amount: {msat}""".format(**invoice_creation)
+    content = f"""Received invoice_creation event for label: {invoice_creation.get('label', 'unknown')}
+    preimage: {invoice_creation.get('preimage', 'unknown')}
+    amount: {invoice_creation.get('msat', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("warning")
 def on_warning(plugin, warning, **kwargs):
     """ Responds to warning event """
-    content = """Received warning event with level: {level}
-    time: {time}
-    source: {source}
-    log: {log}""".format(**warning)
+    content = f"""Received warning event with level: {warning.get('level', 'unknown')}
+    time: {warning.get('time', 'unknown')}
+    source: {warning.get('source', 'unknown')}
+    log: {warning.get('log', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("forward_event")
 def on_forward_event(plugin, forward_event, **kwargs):
     """ Responds to forward_event event """
-    content = """Received a forward event with payment hash: {payment_hash}
-    in channel: {in_channel}
-    out channel: {out_channel}
-    in msat: {in_msat}
-    out msat: {out_msat}
-    fee msat: {fee_msat}
-    status: {status}
-    received time: {received_time}
-    resolved time: {resolved_time}""".format(**forward_event)
+    content = f"""Received a forward event with payment hash: {forward_event.get('payment_hash', 'unknown')}
+    in channel: {forward_event.get('in_channel', 'unknown')}
+    out channel: {forward_event.get('out_channel', 'unknown')}
+    in msat: {forward_event.get('in_msat', 'unknown')}
+    out msat: {forward_event.get('out_msat', 'unknown')}
+    fee msat: {forward_event.get('fee_msat', 'unknown')}
+    status: {forward_event.get('status', 'unknown')}
+    received time: {forward_event.get('received_time', 'unknown')}
+    resolved time: {forward_event.get('resolved_time', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_success")
 def on_sendpay_success(plugin, sendpay_success, **kwargs):
     """ Responds to sendpay_success event """
-    content = """Received a sendpay success event with id: {id}
-    payment hash: {payment_hash}
-    destination: {destination}
-    amount msat: {amount_msat}
-    amount sent msat: {amount_sent_msat}
-    created at: {created_at}
-    status: {status}
-    payment preimage: {payment_preimage}""".format(**sendpay_success)
+    content = f"""Received a sendpay success event with id: {sendpay_success.get('id', 'unknown')}
+    payment hash: {sendpay_success.get('payment_hash', 'unknown')}
+    destination: {sendpay_success.get('destination', 'unknown')}
+    amount msat: {sendpay_success.get('amount_msat', 'unknown')}
+    amount sent msat: {sendpay_success.get('amount_sent_msat', 'unknown')}
+    created at: {sendpay_success.get('created_at', 'unknown')}
+    status: {sendpay_success.get('status', 'unknown')}
+    payment preimage: {sendpay_success.get('payment_preimage', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
 @plugin.subscribe("sendpay_failure")
 def on_sendpay_failure(plugin, sendpay_failure, **kwargs):
     """ Responds to sendpay_success event """
-    content = """Received a sendpay failure event with code: {code}
-    message: {message}
-    data: {data}""".format(**sendpay_failure)
+    content = f"""Received a sendpay failure event with code: {sendpay_failure['code']}
+    message: {sendpay_failure['message']}
+    data: {sendpay_failure['data']}"""
     send_nostr_event(content, plugin)
 
 
@@ -173,8 +173,8 @@ def on_balance_snapshot(plugin, balance_snapshots, **kwargs):
 @plugin.subscribe("openchannel_peer_sigs")
 def on_openchannel_peer_sigs(plugin, openchannel_peer_sigs, **kwargs):
     """ Responds to openchannel_peer_sigs event """
-    content = """Received a openchannel peer sigs event with channel id: {channel_id}
-    signed psbt: {signed_psbt}""".format(**openchannel_peer_sigs)
+    content = f"""Received an openchannel peer sigs event with channel id: {openchannel_peer_sigs.get('channel_id', 'unknown')}
+    signed psbt: {openchannel_peer_sigs.get('signed_psbt', 'unknown')}"""
     send_nostr_event(content, plugin)
 
 
