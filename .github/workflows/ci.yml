@@ -11,12 +11,12 @@ on:
 
 jobs:
   build-and-test:
-    name: Pytest Suite
+    name: Test Suite
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
       matrix:
-        lightningd-version: ["v23.02", "v22.11.1", "v0.12.1", "master"]
+        lightningd-version: ["master", "v23.02", "v22.11.1", "v0.12.1"]
 
     steps:
     - name: Checkout code
