@@ -15,7 +15,6 @@ WORKDIR /tmp/lightning
 RUN git checkout $LIGHTNINGD_VERSION
 RUN ./configure --prefix=/tmp/lightning_install --enable-developer --disable-valgrind --enable-experimental-features
 RUN make -j $(nproc) install
-RUN pip install --user contrib/pyln-client contrib/pyln-testing flaky
 
 FROM ubuntu:latest as final
 
@@ -31,6 +30,8 @@ RUN apt-get update -qq \
 	python3-pip \
 	wget \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
 
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
