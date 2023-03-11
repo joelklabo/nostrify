@@ -29,6 +29,7 @@ RUN apt-get update -qq \
  	libgmp-dev \
  	python3 \
  	python3-pip \
+	python3.10-venv \
 	tree \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
