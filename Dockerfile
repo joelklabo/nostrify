@@ -32,7 +32,7 @@ RUN apt-get update -qq \
 	tree \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN tree tmp
+RUN tree
 
 RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
 
