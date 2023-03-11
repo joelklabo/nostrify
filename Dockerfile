@@ -31,6 +31,8 @@ RUN apt-get update -qq \
 	wget \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN pip install --user /usr/local/contrib/pyln-client /usr/local/contrib/pyln-testing flaky
+
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
 ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/$BITCOIN_TARBALL
@@ -50,6 +52,11 @@ ENV DEVELOPER 1
 
 WORKDIR /build
 ADD requirements.txt /tmp/
-RUN pip3 install -r /tmp/requirements.txt
+RUN set -eux; \
+    while read requirement; do \
+      if [[ $requirement != pyln-client* && $requirement != pyln-testing* ]]; then \
+        pip3 install $requirement; \
+      fi \
+    done < /tmp/requirements.txt
 
 CMD ["pytest", "-vvv", "--timeout=600", "-n=4"]
