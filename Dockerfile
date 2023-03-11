@@ -33,9 +33,6 @@ RUN apt-get update -qq \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-client
-RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-testing
-
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
 ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/$BITCOIN_TARBALL
@@ -55,6 +52,14 @@ ENV DEVELOPER 1
 
 WORKDIR /build
 ADD ci-requirements.txt /tmp/
+
+RUN python3 -m venv cienv
+RUN source cienv/bin/activate
+
+RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
+RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install -r /tmp/ci-requirements.txt
 
 CMD ["pytest", "-vvv", "--timeout=600", "-n=4"]
+
+RUN deactivate
