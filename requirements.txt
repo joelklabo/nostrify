@@ -3,3 +3,4 @@ pyln-testing
 pytest
 pytest-timeout
 pytest-xdist
+nostr
