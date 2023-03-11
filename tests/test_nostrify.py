@@ -64,3 +64,9 @@ def test_channel_opened_event_is_observed(node_factory):
     assert node_1.daemon.is_in_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
     assert node_1.daemon.is_in_log(f"Received connect event for peer: {node_2.info['id']}")
     assert node_2.daemon.is_in_log(f"Received channel_opened event with id: {node_1.info['id']}")
+
+def test_get_nostr_pubkey(node_factory):
+    """ Tests that nostrify can get the nostrify pubkey """
+    node_1 = node_factory.get_node(options={'plugin': plugin_path})
+    nostr_pubkey = node_1.rpc.nostrify_get_nostr_pubkey()
+    assert nostr_pubkey is not None
