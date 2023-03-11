@@ -13,7 +13,6 @@ jobs:
   build-and-test:
     name: Test Suite
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       matrix:
         lightningd-version: ["master", "v23.02", "v22.11.1"]
