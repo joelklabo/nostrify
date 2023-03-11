@@ -29,10 +29,11 @@ RUN apt-get update -qq \
 	python3 \
 	python3-pip \
 	wget \
+	tree \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN pwd
-RUN ls -la
+RUN tree tmp
+
 RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
 
 ARG BITCOIN_VERSION=24.0.1
