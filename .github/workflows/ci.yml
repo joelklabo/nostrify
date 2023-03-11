@@ -16,7 +16,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        lightningd-version: ["master", "v23.02", "v22.11.1", "v0.12.1"]
+        lightningd-version: ["master", "v23.02"]
 
     steps:
     - name: Checkout code
