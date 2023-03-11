@@ -30,8 +30,11 @@ RUN apt-get update -qq \
  	libgmp-dev \
  	python3 \
  	python3-pip \
+	tree \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
+
+RUN tree /usr/local
 
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
