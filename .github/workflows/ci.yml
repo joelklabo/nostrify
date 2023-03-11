@@ -1,4 +1,4 @@
-name: CI Tests 
+name: CI Tests
 
 on:
   push:
@@ -13,13 +13,16 @@ jobs:
   build-and-test:
     name: Pytest Suite
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lightningd-version: ["v23.02", "v22.11.1", "v0.12.1"]
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Build Docker image
-      run: docker build -t cl-test .
+      run: docker build --build-arg LIGHTNINGD_VERSION=${{ matrix.lightningd-version }} -t cl-test .
 
     - name: Test Docker image
       run: docker run -v $(pwd):/build cl-test
