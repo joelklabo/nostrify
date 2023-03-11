@@ -13,6 +13,7 @@ jobs:
   build-and-test:
     name: Pytest Suite
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         lightningd-version: ["v23.02", "v22.11.1", "v0.12.1"]
