@@ -8,16 +8,7 @@ RUN apt-get update -qq \
 	&& apt-get install -y --no-install-recommends \
 	git build-essential autoconf automake build-essential git libtool libgmp-dev \
 	libsqlite3-dev python3 python3-mako net-tools zlib1g-dev libsodium-dev \
-	gettext apt-transport-https ca-certificates \
-	libsqlite3-dev \
-	zlib1g-dev \
-	libsodium-dev \
-	libgmp-dev \
-	python3 \
-	python3-pip \
-	wget \
-	tree \
-	&& rm -rf /var/lib/apt/lists/*
+	gettext apt-transport-https ca-certificates python3-pip wget 
 
 RUN git clone --recursive https://github.com/ElementsProject/lightning.git /tmp/lightning
 WORKDIR /tmp/lightning
@@ -25,13 +16,22 @@ RUN git checkout $LIGHTNINGD_VERSION
 RUN ./configure --prefix=/tmp/lightning_install --enable-developer --disable-valgrind --enable-experimental-features
 RUN make -j $(nproc) install
 
-RUN tree
-
 RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
 
 FROM ubuntu:latest as final
 
 COPY --from=builder /tmp/lightning_install/ /usr/local/
+
+RUN apt-get update -qq \
+ 	&& apt-get install -y --no-install-recommends \
+ 	libsqlite3-dev \
+ 	zlib1g-dev \
+ 	libsodium-dev \
+ 	libgmp-dev \
+ 	python3 \
+ 	python3-pip \
+ 	wget \
+ 	&& rm -rf /var/lib/apt/lists/*
 
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
