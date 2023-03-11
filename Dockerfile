@@ -16,11 +16,10 @@ RUN git checkout $LIGHTNINGD_VERSION
 RUN ./configure --prefix=/tmp/lightning_install --enable-developer --disable-valgrind --enable-experimental-features
 RUN make -j $(nproc) install
 
-RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
-
 FROM ubuntu:latest as final
 
 COPY --from=builder /tmp/lightning_install/ /usr/local/
+COPY --from=builder /tmp/lightning/ /usr/local/src/lightning/
 
 RUN apt-get update -qq \
  	&& apt-get install -y --no-install-recommends \
@@ -34,7 +33,10 @@ RUN apt-get update -qq \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
 
-RUN tree /usr/local
+RUN tree /usr/local/src
+
+RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-client
+RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-testing
 
 ARG BITCOIN_VERSION=24.0.1
 ENV BITCOIN_TARBALL bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz
