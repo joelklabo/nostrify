@@ -3,4 +3,4 @@ pyln-testing
 pytest
 pytest-timeout
 pytest-xdist
-nostr
+git+https://github.com/callebtc/python-nostr@main
