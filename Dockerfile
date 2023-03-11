@@ -31,6 +31,8 @@ RUN apt-get update -qq \
 	wget \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN pwd
+RUN ls -la
 RUN pip3 install --user contrib/pyln-client contrib/pyln-testing
 
 ARG BITCOIN_VERSION=24.0.1
