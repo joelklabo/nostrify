@@ -33,8 +33,6 @@ RUN apt-get update -qq \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
 
-RUN tree /usr/local/src
-
 RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install --user /usr/local/src/lightning/contrib/pyln-testing
 
@@ -56,12 +54,7 @@ ENV TEST_DEBUG 1
 ENV DEVELOPER 1
 
 WORKDIR /build
-ADD requirements.txt /tmp/
-RUN set -eux; \
-    while read requirement; do \
-      if [[ $requirement != pyln-client* && $requirement != pyln-testing* ]]; then \
-        pip3 install $requirement; \
-      fi \
-    done < /tmp/requirements.txt
+ADD ci-requirements.txt /tmp/
+RUN pip3 install -r /tmp/ci-requirements.txt
 
 CMD ["pytest", "-vvv", "--timeout=600", "-n=4"]
