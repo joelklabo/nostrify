@@ -29,8 +29,6 @@ RUN apt-get update -qq \
  	libgmp-dev \
  	python3 \
  	python3-pip \
-	python3.10-venv \
-	tree \
  	wget \
  	&& rm -rf /var/lib/apt/lists/*
 
@@ -54,13 +52,8 @@ ENV DEVELOPER 1
 WORKDIR /build
 ADD ci-requirements.txt /tmp/
 
-RUN python3 -m venv cienv
-RUN source cienv/bin/activate
-
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install -r /tmp/ci-requirements.txt
 
 CMD ["pytest", "-vvv", "--timeout=600", "-n=4"]
-
-RUN deactivate
