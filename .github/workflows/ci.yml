@@ -25,9 +25,7 @@ jobs:
     - name: Restore Cache
       uses: actions/cache@v3
       with:
-        path: |
-          ~/.cache
-          /root/.bitcoin
+        path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
         restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
 
@@ -40,8 +38,6 @@ jobs:
     - name: Save Cache
       uses: actions/cache@v3
       with:
-        path: |
-          ~/.cache
-          /root/.bitcoin
+        path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
         restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
