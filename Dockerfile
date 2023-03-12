@@ -56,6 +56,7 @@ ADD ci-requirements.txt /tmp/
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install git+https://github.com/callebtc/python-nostr@main
+RUN pip3 show nostr
 RUN pip3 install -r /tmp/ci-requirements.txt
 
 CMD ["pytest", "-vvv", "-n=auto"]
