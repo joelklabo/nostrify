@@ -13,6 +13,25 @@ See the documentation for `makesecret` [here](https://lightning.readthedocs.io/l
 
 The relay defaults to `wss://nostr.klabo.blog`.
 
+## How to see your events after starting the plugin
+
+1. Run `lightning-cli makesecret string=nostr` this will return the Nostr secret of your plugin:
+```bash
+$ lightning-cli makesecret string=nostr
+{
+   "secret": "d8e6c7x....8cbcfe"
+}
+```
+
+2. If you have a tool to convert that to a pubkey you can just follow it with your main Nostr account.
+3. If you don't you can log in with it somewhere, you should see events, and the client should show you what the public key is so you can follow it.
+4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that
+5. That should be it. If that's not working please log a bug
+
+### Optional last step
+
+Follow me on nostr `npub19a86gzxctwtz68l8zld2u9y2fjvyyj4juyx8m5geylssrmfj27eqs22ckt` and send me a Zap or tip at `joel@klabo.blog` 🤙
+
 # Setting a Custom Relay
 
 In your lightning config file set this value:
@@ -24,4 +43,4 @@ Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted
 
 Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted to get access to config values.
 
-I'm pretty sure I'm the only user at this point. It's pretty basic. PRs are encouraged! If you'd like to tip me some sats my Lightning Address is: `joel@satoshis.lol`
+I'm pretty sure I'm the only user at this point. It's pretty basic. PRs are encouraged! If you'd like to tip me some sats my Lightning Address is: `joel@klabo.blog`
