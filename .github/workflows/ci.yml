@@ -15,13 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-<<<<<<< HEAD
-        bitcoin-version: ["24.0.1", "23.1.0"]
-        lightningd-version: ["master", "v23.02", "v22.11.1"]
-=======
-        lightningd-version: ["master", "v23.02"]
         bitcoin-version: ["24.0.1", "23.1"]
->>>>>>> bb46a0a (Remove Extra Zero)
+        lightningd-version: ["master", "v23.02", "v22.11.1"]
 
     steps:
     - name: Checkout code
