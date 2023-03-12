@@ -1,4 +1,4 @@
-name: CI Tests
+name: Integration Tests
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test:
-    name: Test Suite
+    name: Integration Tests 
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,5 +40,5 @@ jobs:
         path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
 
-    - name: Test Docker image
+    - name: Run Integration Tests 
       run: docker run -v $(pwd):/build cl-test
