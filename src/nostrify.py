@@ -186,8 +186,9 @@ def on_shutdown(**kwargs):
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
 
 # Methods
+
 @plugin.method("nostrifypubkey")
-def nostrify_pubkey(plugin):
+def nostrifypubkey(plugin):
     """ Returns the node's pubkey """
     private_key = PrivateKey(bytes.fromhex(plugin.secret))
     public_key = f"{private_key.public_key.bech32()}"
