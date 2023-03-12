@@ -187,7 +187,9 @@ plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send
 
 # Methods
 
-@plugin.method("nostrifypubkey")
+nostrifypubkey_description = """Returns the node's pubkey"""
+
+@plugin.method("nostrifypubkey", long_desc=nostrifypubkey_description)
 def nostrifypubkey(plugin):
     """ Returns the node's pubkey """
     private_key = PrivateKey(bytes.fromhex(plugin.secret))
