@@ -20,10 +20,28 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
+
+    - name: Restore Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache
+          /root/.bitcoin
+        key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
+        restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
 
     - name: Build Docker image
-      run: docker build --build-arg LIGHTNINGD_VERSION=${{ matrix.lightningd-version }} --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} -t cl-test .
-
-    - name: Test Docker image
-      run: docker run -v $(pwd):/build cl-test
+      run: |
+        docker build --build-arg LIGHTNINGD_VERSION=${{ matrix.lightningd-version }} \
+                     --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} \
+                     -t cl-test .
+      
+    - name: Save Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache
+          /root/.bitcoin
+        key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
+        restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
