@@ -39,3 +39,6 @@ jobs:
       with:
         path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
+
+    - name: Test Docker image
+      run: docker run -v $(pwd):/build cl-test
