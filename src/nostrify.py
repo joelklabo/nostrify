@@ -164,14 +164,6 @@ def on_coin_movement(coin_movement, **kwargs):
     coin type: {coin_movement.get('coin_type', 'unknown')}"""
     send_nostr_event(content)
 
-
-@plugin.subscribe("balance_snapshot")
-def on_balance_snapshot(balance_snapshots, **kwargs):
-    """ Responds to coin_movement event """
-    content = f"Received a balance snapshot event: {balance_snapshots}"
-    send_nostr_event(content)
-
-
 @plugin.subscribe("openchannel_peer_sigs")
 def on_openchannel_peer_sigs(openchannel_peer_sigs, **kwargs):
     """ Responds to openchannel_peer_sigs event """
