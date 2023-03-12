@@ -27,7 +27,6 @@ jobs:
       with:
         path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
-        restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
 
     - name: Build Docker image
       run: |
@@ -40,4 +39,3 @@ jobs:
       with:
         path: .cache
         key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
-        restore-keys: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-
