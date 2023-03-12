@@ -2,6 +2,7 @@
 
 import os
 from pyln.client import Plugin
+from nostr import *
 
 plugin = Plugin()
 
@@ -16,6 +17,7 @@ def send_nostr_event(content):
         os.system(command)
 
 @plugin.init()
+@plugin.method("nostrifypubkey")
 def init(options, configuration, **kwargs):
     """ Initializes the plugin """
    
@@ -29,6 +31,8 @@ def init(options, configuration, **kwargs):
         return
 
     plugin.log("Plugin nostrify initialized")
+
+# Subscriptions
 
 @plugin.subscribe("channel_opened")
 def on_channel_opened(channel_opened, **kwargs):
@@ -177,6 +181,20 @@ def on_shutdown(**kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
+# Options
+
 plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+
+# Methods
+
+nostrifypubkey_description = """Returns the node's pubkey"""
+
+@plugin.method("nostrifypubkey", long_desc=nostrifypubkey_description)
+def nostrifypubkey(plugin):
+    """ Returns the node's pubkey """
+    private_key = PrivateKey(bytes.fromhex(plugin.secret))
+    public_key = f"{private_key.public_key.bech32()}"
+    plugin.log(f"Returning public_key: {public_key}")
+    return public_key
 
 plugin.run()
