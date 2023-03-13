@@ -1,7 +1,5 @@
 import os
-import unittest
 from pyln.testing.fixtures import *
-from pyln.testing.utils import DEVELOPER
 
 test_path = os.path.dirname(__file__)
 plugin_path = os.path.join(test_path, '..', 'src', 'nostrify.py')
