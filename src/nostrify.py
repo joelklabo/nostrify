@@ -7,7 +7,11 @@ plugin = Plugin()
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
-    command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+
+    if plugin.dm_recipient is None:
+        command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
+    else:
+        command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" --dm "{plugin.dm_recipient}" | websocat {plugin.relay} > /dev/null'
     
     if os.environ.get('TEST_DEBUG') is not None:
         plugin.log("++++++ Nostrify TEST DEBUG MESSAGE CONTENT ++++++")
@@ -22,8 +26,14 @@ def init(options, configuration, **kwargs):
     secret = plugin.rpc.makesecret(string='nostr')['secret']
     plugin.secret = secret
 
-    plugin.relay = plugin.get_option('relay')
+    plugin.relay = plugin.get_option('nostr_relay')
     plugin.log(f"Nostrify set to use relay: {plugin.relay}")
+
+    plugin.dm_recipient = plugin.get_option('nostr_dm_recipient')
+    plugin.log(f"Nostrify set to use dm recipient: {plugin.dm_recipient}")
+    
+    if plugin.dm_recipient is None:
+        plugin.log("DM Recipient not set. Nostrify will send public events")
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
@@ -178,6 +188,7 @@ def on_shutdown(**kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
-plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_dm_recipient', '', 'The pubkey of the recipient of the direct messages (default: just sends events publicly')
 
 plugin.run()

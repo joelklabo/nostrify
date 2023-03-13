@@ -35,12 +35,24 @@ def test_relay_is_settable(node_factory):
     fake_relay = 'wss://fake.relay.com'
     opts = {
         'plugin': plugin_path,
-        'relay': fake_relay 
+        'nostr_relay': fake_relay 
     }
     node_1 = node_factory.get_node(options=opts)
 
     assert node_1.daemon.is_in_log(fake_relay)
     assert not node_1.daemon.is_in_log("wss://nostr.klabo.blog")
+
+def test_dm_participant_is_settable(node_factory):
+    """ Tests that a dm participant can be set """
+    fake_dm_participant = 'SOMEPUBKEY'
+    opts = {
+        'plugin': plugin_path,
+        'nostr_dm_participant': fake_dm_participant 
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert node_1.daemon.is_in_log(fake_dm_participant)
+    assert not node_1.daemon.is_in_log("DM Recipient not set")
 
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
