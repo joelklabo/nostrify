@@ -20,13 +20,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Restore Cache
-      uses: actions/cache@v3
-      with:
-        path: .cache
-        key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
+      uses: actions/checkout@v3
 
     - name: Build Docker image
       run: |
@@ -34,11 +28,5 @@ jobs:
                      --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} \
                      -t cl-test .
       
-    - name: Save Cache
-      uses: actions/cache@v3
-      with:
-        path: .cache
-        key: ${{ runner.os }}-build-${{ matrix.lightningd-version }}-${{ matrix.bitcoin-version }}
-
     - name: Run Integration Tests 
       run: docker run -v $(pwd):/build cl-test
