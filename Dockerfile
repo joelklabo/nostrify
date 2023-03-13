@@ -56,4 +56,4 @@ RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install -r /tmp/ci-requirements.txt
 
-CMD ["pytest", "-vvv"]
+CMD ["pytest", "-vvv", "-n=auto"]
