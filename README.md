@@ -35,7 +35,7 @@ Follow me on nostr `npub19a86gzxctwtz68l8zld2u9y2fjvyyj4juyx8m5geylssrmfj27eqs22
 # Setting a Custom Relay
 
 In your lightning config file set this value:
-`nostr_relay=<your preferred relay to send events to>` (default is `wss://nostr.klabo.blog`)
+`relay=<your preferred relay to send events to>` (default is `wss://nostr.klabo.blog`)
 
 Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted to get access to config values.
 
