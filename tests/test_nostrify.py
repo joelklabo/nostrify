@@ -44,14 +44,14 @@ def test_relay_is_settable(node_factory):
 
 def test_dm_participant_is_settable(node_factory):
     """ Tests that a dm participant can be set """
-    fake_dm_participant = 'SOMEPUBKEY'
+    fake_nostr_dm_recipient = 'SOMEPUBKEY'
     opts = {
         'plugin': plugin_path,
-        'nostr_dm_participant': fake_dm_participant 
+        'nostr_dm_recipient': fake_nostr_dm_recipient 
     }
     node_1 = node_factory.get_node(options=opts)
 
-    assert node_1.daemon.is_in_log(fake_dm_participant)
+    assert node_1.daemon.is_in_log(fake_nostr_dm_recipient)
     assert not node_1.daemon.is_in_log("DM Recipient not set")
 
 def test_connect_event_is_observed(node_factory):
