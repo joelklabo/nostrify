@@ -40,6 +40,7 @@ def test_relay_is_settable(node_factory):
     node_1 = node_factory.get_node(options=opts)
 
     assert node_1.daemon.is_in_log(fake_relay)
+    assert not node_1.daemon.is_in_log("wss://nostr.klabo.blog")
 
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
