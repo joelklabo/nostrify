@@ -30,10 +30,11 @@ def init(options, configuration, **kwargs):
     plugin.log(f"Nostrify set to use relay: {plugin.relay}")
 
     plugin.dm_recipient = plugin.get_option('nostr_dm_recipient')
-    plugin.log(f"Nostrify set to use dm recipient: {plugin.dm_recipient}")
     
     if plugin.dm_recipient is None:
-        plugin.log("DM Recipient not set. Nostrify will send public events")
+        plugin.log("Nostrify will send public events. Set nostr_dm_recipient to send DM events")
+    else:
+        plugin.log(f"Nostrify will send DM events to {plugin.dm_recipient}")
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
