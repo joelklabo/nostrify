@@ -36,11 +36,13 @@ $ lightning-cli makesecret string=nostr
    "secret": "d8e6c7x....8cbcfe"
 }
 ```
-
 2. If you have a tool to convert that to a pubkey you can just follow it with your main Nostr account.
-3. If you don't you can log in with it somewhere, you should see events, and the client should show you what the public key is so you can follow it.
-4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that.
+3. If you don't you can log in with it https://snort.social, you should see events, and the client should show you what the public key is so you can follow it.
+4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that
 5. That should be it. If that's not working please log a bug
+
+### Example after logging into https://snort.social :
+<img width="870" alt="image" src="https://user-images.githubusercontent.com/264977/224822474-3e077bb9-a11c-4269-afd4-8a2121a9a033.png">
 
 ## If you are sending DMs
 
