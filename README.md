@@ -13,7 +13,21 @@ See the documentation for `makesecret` [here](https://lightning.readthedocs.io/l
 
 The relay defaults to `wss://nostr.klabo.blog`.
 
+## Important settings
+
+In your `.lightning/config` you SHOULD set a relay to send your events to, and a recipient if you want events sent as a DM:
+
+Example:
+```
+nostr_relay=wss://nostr.klabo.blog
+nostr_dm_recipient=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2 (HEX not npub for now)
+```
+
+If you don't set these the relays will default to `wss://nosrt.klabo.blog` and events will be sent publicly.
+
 ## How to see your events after starting the plugin
+
+### If you are not sending DMs
 
 1. Run `lightning-cli makesecret string=nostr` this will return the Nostr secret of your plugin:
 ```bash
@@ -25,8 +39,12 @@ $ lightning-cli makesecret string=nostr
 
 2. If you have a tool to convert that to a pubkey you can just follow it with your main Nostr account.
 3. If you don't you can log in with it somewhere, you should see events, and the client should show you what the public key is so you can follow it.
-4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that
+4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that.
 5. That should be it. If that's not working please log a bug
+
+## If you are sending DMs
+
+1. You should just see them in your client.
 
 ### Optional last step
 
