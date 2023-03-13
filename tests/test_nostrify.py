@@ -32,6 +32,17 @@ def test_secret_exists(node_factory):
 
     assert not node_1.daemon.is_in_log("Must pass a `secret` option for creating events")
 
+def test_relay_is_settable(node_factory):
+    """ Tests that a relay can be set """
+    fake_relay = 'wss://fake.relay.com'
+    opts = {
+        'plugin': plugin_path,
+        'relay': fake_relay 
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert node_1.daemon.is_in_log(fake_relay)
+
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
     
