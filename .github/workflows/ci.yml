@@ -30,4 +30,4 @@ jobs:
 
       
     - name: Run Integration Tests 
-      run: docker run -v $(pwd):/build integration 
+      run: docker run -v $(pwd)/../../:/build integration 
