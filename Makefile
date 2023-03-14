@@ -1,8 +1,5 @@
 docker-image:
-	docker build -t cl-test .
+	docker build . -t integration -f docker/integration/Dockerfile
 
 docker-test:
-	docker run -ti -v $(shell pwd):/build cl-test
-
-docker-test-ci:
-	docker run -v $(shell pwd):/build cl-test
+	docker run -ti -v $(shell pwd):/build integration 
