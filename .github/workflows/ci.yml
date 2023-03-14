@@ -28,6 +28,8 @@ jobs:
                --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} \
                -t integration docker/integration/
 
+    - name: Check directory
+      run: pwd
       
     - name: Run Integration Tests 
       run: docker run -v $(pwd)/../../:/build integration 
