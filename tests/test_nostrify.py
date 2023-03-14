@@ -35,7 +35,8 @@ def test_relay_is_settable(node_factory):
     fake_relay = 'wss://fake.relay.com'
     opts = {
         'plugin': plugin_path,
-        'relay': fake_relay 
+        'relay': fake_relay,
+        'dev-fast-gossip': True,
     }
     node_1 = node_factory.get_node(options=opts)
 
@@ -44,8 +45,13 @@ def test_relay_is_settable(node_factory):
 
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
+
+    opts = {
+        'plugin': plugin_path,
+        'dev-fast-gossip': True
+    }
     
-    node_1, node_2 = node_factory.line_graph(2, opts={'plugin': plugin_path}, wait_for_announce=True)
+    node_1, node_2 = node_factory.line_graph(2, options=opts, wait_for_announce=True)
 
     assert not node_1.daemon.is_in_log("KeyError")
 
@@ -53,9 +59,14 @@ def test_connect_event_is_observed(node_factory):
 
 def test_channel_opened_event_is_observed(node_factory):
     """ Tests that a channel open event is observed """
+    
+    opts = {
+        'plugin': plugin_path,
+        'dev-fast-gossip': True
+    }
    
-    node_1 = node_factory.get_node(options={'plugin': plugin_path})
-    node_2 = node_factory.get_node(options={'plugin': plugin_path})
+    node_1 = node_factory.get_node(options=opts)
+    node_2 = node_factory.get_node(options=opts)
     
     node_factory.join_nodes([node_1, node_2], fundamount=10**6, wait_for_announce=True)
 
