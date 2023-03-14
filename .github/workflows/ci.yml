@@ -25,8 +25,9 @@ jobs:
     - name: Build Docker image
       run: |
         docker build --build-arg LIGHTNINGD_VERSION=${{ matrix.lightningd-version }} \
-                     --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} \
-                     -t integration . docker/integration/Dockerfile 
+               --build-arg BITCOIN_VERSION=${{ matrix.bitcoin-version }} \
+               -t integration docker/integration/
+
       
     - name: Run Integration Tests 
       run: docker run -v $(pwd):/build integration 
