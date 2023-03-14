@@ -4,7 +4,7 @@ Tested on Bitcoin Core `24.0.1`, `23.1`
 Core Lightning `master`, `23.02`, `22.11.1`
 
 # Nostrify
-Core Lightning plugin that sends events to Nostr (**requires CLN 22**)
+Core Lightning plugin that sends events to Nostr
 
 # Quickstart
 
