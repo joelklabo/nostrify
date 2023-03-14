@@ -48,6 +48,4 @@ Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted
 
 # Contribute
 
-Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted to get access to config values.
-
-I'm pretty sure I'm the only user at this point. It's pretty basic. PRs are encouraged! If you'd like to tip me some sats my Lightning Address is: `joel@klabo.blog`
+If you find a bug or have feature requests file an issue. PRs are also welcomed 🤙
