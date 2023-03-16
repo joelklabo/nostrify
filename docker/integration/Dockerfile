@@ -50,6 +50,9 @@ ENV TEST_DEBUG 1
 ENV DEVELOPER 1
 
 WORKDIR /build
+
+CMD [ "echo", "Current directory: ${pwd}" ]
+
 ADD ci-requirements.txt /tmp/
 
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
