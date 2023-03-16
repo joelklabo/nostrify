@@ -1,0 +1,3 @@
+[submodule "contrib/python-nostr"]
+	path = contrib/python-nostr
+	url = https://github.com/callebtc/python-nostr.git
