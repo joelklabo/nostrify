@@ -2,7 +2,7 @@
 
 import os
 from pyln.client import Plugin
-from nostr.nostr.key import PrivateKey
+from nostr.key import PrivateKey
 
 plugin = Plugin()
 
@@ -17,7 +17,6 @@ def send_nostr_event(content):
         os.system(command)
 
 @plugin.init()
-@plugin.method("nostrifypubkey")
 def init(options, configuration, **kwargs):
     """ Initializes the plugin """
    
@@ -188,9 +187,7 @@ plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send
 
 # Methods
 
-nostrifypubkey_description = """Returns the node's pubkey"""
-
-@plugin.method("nostrifypubkey", long_desc=nostrifypubkey_description)
+@plugin.method("nostrifypubkey")
 def nostrifypubkey(plugin):
     """ Returns the node's pubkey """
     private_key = PrivateKey(bytes.fromhex(plugin.secret))
