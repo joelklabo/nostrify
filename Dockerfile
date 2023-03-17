@@ -31,6 +31,7 @@ RUN apt-get update -qq \
  	python3-pip \
  	wget \
 	git \
+	tree \
  	&& rm -rf /var/lib/apt/lists/*
 
 ARG BITCOIN_VERSION=24.0.1
@@ -57,4 +58,4 @@ RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install -r /tmp/ci-requirements.txt
 
-CMD ["pytest", "-vvv", "-n=auto"]
+CMD ["pytest", "-vvv", "-n=auto", "-k", "tests"]

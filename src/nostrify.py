@@ -2,7 +2,7 @@
 
 import os
 from pyln.client import Plugin
-from nostr import *
+from contrib.nostr.nostr.key import PrivateKey
 
 plugin = Plugin()
 
