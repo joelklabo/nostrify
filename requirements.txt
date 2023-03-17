@@ -1,6 +1,2 @@
 pyln-client
-pyln-testing
-pytest
-pytest-timeout
-pytest-xdist
-git+https://github.com/callebtc/python-nostr@main
+git+https://github.com/joelklabo/python-nostr.git
