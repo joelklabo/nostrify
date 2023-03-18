@@ -42,6 +42,17 @@ def test_relay_is_settable(node_factory):
     assert node_1.daemon.is_in_log(fake_relay)
     assert not node_1.daemon.is_in_log("wss://nostr.klabo.blog")
 
+def test_relay_is_settable(node_factory):
+    """ Tests that a relay can be set """
+    fake_pubkey = '123456'
+    opts = {
+        'plugin': plugin_path,
+        'nostr_pubkey': fake_pubkey 
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert node_1.daemon.is_in_log(fake_pubkey)
+
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
     

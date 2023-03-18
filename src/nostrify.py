@@ -29,6 +29,7 @@ def init(options, configuration, **kwargs):
     plugin.relay = plugin.get_option('nostr_relay')
     plugin.log(f"Nostrify set to use relay: {plugin.relay}")
     plugin.pubkey = plugin.get_option('nostr_pubkey')
+    plugin.log(f"Nostrify set to use pubkey: {plugin.pubkey}")
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
