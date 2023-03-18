@@ -35,7 +35,7 @@ def test_relay_is_settable(node_factory):
     fake_relay = 'wss://fake.relay.com'
     opts = {
         'plugin': plugin_path,
-        'relay': fake_relay 
+        'nostr_relay': fake_relay 
     }
     node_1 = node_factory.get_node(options=opts)
 

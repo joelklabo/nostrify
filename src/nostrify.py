@@ -3,18 +3,21 @@
 import os
 from pyln.client import Plugin
 from nostr.key import PrivateKey
+from nostr_publisher import NostrPublisher
 
 plugin = Plugin()
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
-    command = rf'nostril --envelope --sec "{plugin.secret}" --content "{content}" | websocat {plugin.relay} > /dev/null'
-    
     if os.environ.get('TEST_DEBUG') is not None:
         plugin.log("++++++ Nostrify TEST DEBUG MESSAGE CONTENT ++++++")
         plugin.log(content)
     else:
-        os.system(command)
+        if plugin.pubkey is not None: # Send as DM
+            plugin.publisher.publish_dm_content(content)
+        else:
+            plugin.publisher.publish_content(content)
+
 
 @plugin.init()
 def init(options, configuration, **kwargs):
@@ -23,12 +26,15 @@ def init(options, configuration, **kwargs):
     secret = plugin.rpc.makesecret(string='nostr')['secret']
     plugin.secret = secret
 
-    plugin.relay = plugin.get_option('relay')
+    plugin.relay = plugin.get_option('nostr_relay')
     plugin.log(f"Nostrify set to use relay: {plugin.relay}")
+    plugin.pubkey = plugin.get_option('nostr_pubkey')
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
         return
+
+    plugin.publisher = NostrPublisher([plugin.relay], plugin.secret)
 
     plugin.log("Plugin nostrify initialized")
 
@@ -183,7 +189,8 @@ def on_shutdown(**kwargs):
 
 # Options
 
-plugin.add_option('relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog')
+plugin.add_option('nostr_pubkey', '', 'The Nostr pubkey you want to send events to (default will send events publicly)')
 
 # Methods
 
