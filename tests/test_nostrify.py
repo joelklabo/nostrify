@@ -2,7 +2,7 @@ import os
 from pyln.testing.fixtures import *
 
 test_path = os.path.dirname(__file__)
-plugin_path = os.path.join(test_path, '..', 'src', 'nostrify.py')
+plugin_path = os.path.join(test_path, '..', 'nostrify.py')
 
 def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
@@ -35,12 +35,23 @@ def test_relay_is_settable(node_factory):
     fake_relay = 'wss://fake.relay.com'
     opts = {
         'plugin': plugin_path,
-        'relay': fake_relay 
+        'nostr_relay': fake_relay 
     }
     node_1 = node_factory.get_node(options=opts)
 
     assert node_1.daemon.is_in_log(fake_relay)
     assert not node_1.daemon.is_in_log("wss://nostr.klabo.blog")
+
+def test_pubkey_is_settable(node_factory):
+    """ Tests that a pubkey can be set """
+    fake_pubkey = '123456'
+    opts = {
+        'plugin': plugin_path,
+        'nostr_pubkey': fake_pubkey 
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert node_1.daemon.is_in_log(fake_pubkey)
 
 def test_connect_event_is_observed(node_factory):
     """ Tests that a connect event is observed """
@@ -64,3 +75,9 @@ def test_channel_opened_event_is_observed(node_factory):
     assert node_1.daemon.is_in_log(f"Received channel_state_changed event for peer id: {node_2.info['id']}")
     assert node_1.daemon.is_in_log(f"Received connect event for peer: {node_2.info['id']}")
     assert node_2.daemon.is_in_log(f"Received channel_opened event with id: {node_1.info['id']}")
+
+def test_get_nostr_pubkey(node_factory):
+    """ Tests that nostrify can get the nostrify pubkey """
+    node_1 = node_factory.get_node(options={'plugin': plugin_path})
+    nostr_pubkey = node_1.rpc.nostrifypubkey()
+    assert nostr_pubkey is not None

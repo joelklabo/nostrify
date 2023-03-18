@@ -1,0 +1,3 @@
+[submodule "nostr"]
+	path = nostr
+	url = https://github.com/joelklabo/python-nostr.git

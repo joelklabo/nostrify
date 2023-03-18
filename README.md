@@ -8,7 +8,7 @@ Core Lightning plugin that sends events to Nostr
 
 # Quickstart
 
-Requires [`nostril`](https://github.com/jb55/nostril/tree/master) for creating Nostr events and [`websocat`](https://github.com/vi/websocat) for sending over web socket.
+Clone this repo into your `/plugins` folder. You'll need to run `pip3 install -r requirements.txt`
 
 By default `Nostrify` uses `lightning-cli makesecret string=nostr` to generate a Nostr key for you. This generates a psuedorandom secret based off of your `HSM_secret`.
 
@@ -16,24 +16,23 @@ See the documentation for `makesecret` [here](https://lightning.readthedocs.io/l
 
 The relay defaults to `wss://nostr.klabo.blog`.
 
-## How to see your events after starting the plugin
-
-1. Run `lightning-cli makesecret string=nostr` this will return the Nostr secret of your plugin:
+To find the pubkey of your node run:
 ```bash
-$ lightning-cli makesecret string=nostr
-{
-   "secret": "d8e6c7x....8cbcfe"
-}
+$ lightning-cli nostrifypubkey
+"npub1sqqres47s8x9ztva4nn525j5w72l23tvw0rh04t49h3gg5xccq7spvtqzs"
 ```
 
-2. If you have a tool to convert that to a pubkey you can just follow it with your main Nostr account.
-3. If you don't you can log in with it https://snort.social, you should see events, and the client should show you what the public key is so you can follow it.
-4. If you didn't set a custom relay, all events are sent to `wss://nostr.klabo.blog` so you'll need to subscribe to that
-5. That should be it. If that's not working please log a bug
+By default `Nostrify` sends events publicly. If you want to receive events as an encrypted DM set a pubkey in your config file. You can also set a custom relay here:
 
-### Example after logging into https://snort.social :
-<img width="870" alt="image" src="https://user-images.githubusercontent.com/264977/224822474-3e077bb9-a11c-4269-afd4-8a2121a9a033.png">
+```
+# Nostrify
+nostr_relay=wss://nostr.klabo.blog
+nostr_pubkey=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2
+```
 
+### Example of Nostrify messages in Damus DM:
+
+![IMG_537E93ECED3E-1](https://user-images.githubusercontent.com/264977/226097495-f598913c-9a82-4654-a802-aacb8bd315a9.jpeg)
 
 ### Optional last step
 

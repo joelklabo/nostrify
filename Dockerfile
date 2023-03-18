@@ -30,6 +30,8 @@ RUN apt-get update -qq \
  	python3 \
  	python3-pip \
  	wget \
+	git \
+	tree \
  	&& rm -rf /var/lib/apt/lists/*
 
 ARG BITCOIN_VERSION=24.0.1
@@ -50,10 +52,15 @@ ENV TEST_DEBUG 1
 ENV DEVELOPER 1
 
 WORKDIR /build
+COPY . /build/
+
+RUN git submodule update --init --recursive
 ADD ci-requirements.txt /tmp/
 
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-client
 RUN pip3 install /usr/local/src/lightning/contrib/pyln-testing
 RUN pip3 install -r /tmp/ci-requirements.txt
 
-CMD ["pytest", "-vvv", "-n=auto"]
+RUN pip3 install git+https://github.com/joelklabo/python-nostr.git
+
+CMD ["pytest", "-vvv", "-n=auto", "-k", "tests"]
