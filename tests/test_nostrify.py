@@ -2,7 +2,7 @@ import os
 from pyln.testing.fixtures import *
 
 test_path = os.path.dirname(__file__)
-plugin_path = os.path.join(test_path, '..', 'src', 'nostrify.py')
+plugin_path = os.path.join(test_path, '..', 'nostrify.py')
 
 def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
