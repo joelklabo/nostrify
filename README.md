@@ -32,6 +32,8 @@ nostr_pubkey=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2
 
 ### Example of Nostrify messages in Damus DM:
 
+![IMG_537E93ECED3E-1](https://user-images.githubusercontent.com/264977/226097495-f598913c-9a82-4654-a802-aacb8bd315a9.jpeg)
+
 ### Optional last step
 
 Follow me on nostr `npub19a86gzxctwtz68l8zld2u9y2fjvyyj4juyx8m5geylssrmfj27eqs22ckt` and send me a Zap or tip at `joel@klabo.blog` 🤙
