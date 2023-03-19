@@ -22,7 +22,7 @@ $ lightning-cli nostrifypubkey
 "npub1sqqres47s8x9ztva4nn525j5w72l23tvw0rh04t49h3gg5xccq7spvtqzs"
 ```
 
-By default `Nostrify` sends events publicly. If you want to receive events as an encrypted DM set a pubkey in your config file. You can also set a custom relay here:
+By default `Nostrify` sends events as DMs. To receive events as an encrypted DM set a pubkey in your config file. You can also set a custom relay here:
 
 ```
 # Nostrify
