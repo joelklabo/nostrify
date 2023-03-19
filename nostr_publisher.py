@@ -4,9 +4,10 @@ from nostr.key import PrivateKey
 from nostr.relay_manager import RelayManager
 
 class NostrPublisher:
-	def __init__(self, relays, private_key_str):
+	def __init__(self, relays, private_key_str, recipient_pubkey):
 		self.relays = relays
 		self.private_key = private_key = PrivateKey(bytes.fromhex(private_key_str))
+		self.recipient_pubkey = recipient_pubkey
 		self.relay_manager = RelayManager()
 		for relay in self.relays:
 			self.relay_manager.add_relay(relay)
@@ -23,7 +24,7 @@ class NostrPublisher:
 	
 	def publish_dm_content(self, content):
 		dm = EncryptedDirectMessage(
-		  recipient_pubkey="2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2",
+		  recipient_pubkey=self.recipient_pubkey,
 		  cleartext_content=content
 		)
 		self.private_key.sign_event(dm)

@@ -13,11 +13,7 @@ def send_nostr_event(content):
         plugin.log("++++++ Nostrify TEST DEBUG MESSAGE CONTENT ++++++")
         plugin.log(content)
     else:
-        if plugin.pubkey is not None: # Send as DM
-            plugin.publisher.publish_dm_content(content)
-        else:
-            plugin.publisher.publish_content(content)
-
+        plugin.publisher.publish_dm_content(content)
 
 @plugin.init()
 def init(options, configuration, **kwargs):
@@ -28,14 +24,18 @@ def init(options, configuration, **kwargs):
 
     plugin.relay = plugin.get_option('nostr_relay')
     plugin.log(f"Nostrify set to use relay: {plugin.relay}")
+
     plugin.pubkey = plugin.get_option('nostr_pubkey')
     plugin.log(f"Nostrify set to use pubkey: {plugin.pubkey}")
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
         return
+    
+    if plugin.pubkey is None:
+        plugin.log("Must pass a `pubkey` option for creating events")
 
-    plugin.publisher = NostrPublisher([plugin.relay], plugin.secret)
+    plugin.publisher = NostrPublisher([plugin.relay], plugin.secret, plugin.pubkey)
 
     plugin.log("Plugin nostrify initialized")
 
