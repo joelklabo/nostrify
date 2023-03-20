@@ -22,22 +22,27 @@ def init(options, configuration, **kwargs):
     secret = plugin.rpc.makesecret(string='nostr')['secret']
     plugin.secret = secret
 
-    plugin.relay = plugin.get_option('nostr_relay')
-    plugin.log(f"Nostrify set to use relay: {plugin.relay}")
+    plugin.relays = plugin.get_option('nostr_relay')
+    plugin.log(f"Nostrify set to use relays: {plugin.relays}")
 
     plugin.pubkey = plugin.get_option('nostr_pubkey')
     plugin.log(f"Nostrify set to use pubkey: {plugin.pubkey}")
+
+    if plugin.relays is None:
+        plugin.log("Must set at least one relay with the `nostr_relay` option")
+        return
     
     if plugin.secret is None:
         plugin.log("Must pass a `secret` option for creating events")
         return
     
     if plugin.pubkey is None:
-        plugin.log("Must pass a `pubkey` option for creating events")
+        plugin.log("Must set a pubkey with the `nostr_pubkey` option")
+        return
 
-    plugin.publisher = NostrPublisher([plugin.relay], plugin.secret, plugin.pubkey)
+    plugin.publisher = NostrPublisher(plugin.relays, plugin.secret, plugin.pubkey)
 
-    plugin.log("Plugin nostrify initialized")
+    plugin.log("Nostrify plugin initialized")
 
 # Subscriptions
 
@@ -190,7 +195,7 @@ def on_shutdown(**kwargs):
 
 # Options
 
-plugin.add_option('nostr_relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog)')
+plugin.add_option('nostr_relay', '', 'The relay you want to send events to (default: wss://nostr.klabo.blog)', multi=True)
 plugin.add_option('nostr_pubkey', '', 'The Nostr pubkey you want to send events to (default will send events publicly)')
 
 # Methods
