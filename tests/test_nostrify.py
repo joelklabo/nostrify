@@ -53,7 +53,7 @@ def test_relay_is_settable(node_factory):
 def test_relay_is_settable(node_factory):
     """ Tests that a relay can be set """
     fake_relay = 'wss://fake.relay.com'
-    other_fake_relay = 'wss://other.fake.relay.com'
+    other_fake_relay = 'wss://other.fake.com'
     opts = {
         'plugin': plugin_path,
         'nostr_relay': fake_relay,
@@ -72,7 +72,7 @@ def test_pubkey_is_settable(node_factory):
     opts = {
         'plugin': plugin_path,
         'nostr_pubkey': fake_pubkey,
-        'nostr_relay': 'FakeRelay'
+        'nostr_relay': 'wss://fake.relay.com'
     }
     node_1 = node_factory.get_node(options=opts)
 
@@ -83,7 +83,7 @@ def test_connect_event_is_observed(node_factory):
     
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': 'FakeRelay',
+        'nostr_relay': 'wss://fake.relay.com',
         'nostr_pubkey': 'FakePubkey' 
     }
 
@@ -98,7 +98,7 @@ def test_channel_opened_event_is_observed(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': 'FakeRelay',
+        'nostr_relay': 'wss://fake.relay.com',
         'nostr_pubkey': 'FakePubkey' 
     }
    
@@ -118,7 +118,7 @@ def test_get_nostr_pubkey(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': 'FakeRelay',
+        'nostr_relay': 'wss://fake.relay.com',
         'nostr_pubkey': 'FakePubkey' 
     }
 
