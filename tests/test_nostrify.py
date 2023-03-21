@@ -50,7 +50,7 @@ def test_relay_is_settable(node_factory):
     assert node_1.daemon.is_in_log(fake_relay)
     assert not node_1.daemon.is_in_log("wss://nostr.klabo.blog")
 
-def test_relay_is_settable(node_factory):
+def test_relay_is_multi_settable(node_factory):
     """ Tests that a relay can be set """
     fake_relay = 'wss://fake.relay.com'
     other_fake_relay = 'wss://other.fake.com'
