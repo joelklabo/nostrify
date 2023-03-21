@@ -48,6 +48,7 @@ def init(options, configuration, **kwargs):
     except Exception as e:
         nostrify_log("an error occurred while initializing the NostrPublisher:")
         nostrify_log(str(e))   
+        return
 
     nostrify_log("plugin initialized")
 
