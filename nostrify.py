@@ -10,10 +10,13 @@ plugin = Plugin()
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
     if os.environ.get('TEST_DEBUG') is not None:
-        plugin.log("++++++ Nostrify TEST DEBUG MESSAGE CONTENT ++++++")
-        plugin.log(content)
+        nostrify_log(content)
     else:
         plugin.publisher.publish_dm_content(content)
+
+def nostrify_log(message):
+    """ Logs a message to the plugin log """
+    plugin.log(f"[Nostrify]: {message}")
 
 @plugin.init()
 def init(options, configuration, **kwargs):
@@ -23,26 +26,30 @@ def init(options, configuration, **kwargs):
     plugin.secret = secret
 
     plugin.relays = plugin.get_option('nostr_relay')
-    plugin.log(f"Nostrify set to use relays: {plugin.relays}")
+    nostrify_log(f"set to use relays: {plugin.relays}")
 
     plugin.pubkey = plugin.get_option('nostr_pubkey')
-    plugin.log(f"Nostrify set to use pubkey: {plugin.pubkey}")
+    nostrify_log(f"set to use pubkey: {plugin.pubkey}")
 
     if plugin.relays is None:
-        plugin.log("Must set at least one relay with the `nostr_relay` option")
+        nostrify_log("must set at least one relay with the `nostr_relay` option")
         return
     
     if plugin.secret is None:
-        plugin.log("Must pass a `secret` option for creating events")
+        nostrify_log("must pass a `secret` option for creating events")
         return
     
     if plugin.pubkey is None:
-        plugin.log("Must set a pubkey with the `nostr_pubkey` option")
+        nostrify_log("must set a pubkey with the `nostr_pubkey` option")
         return
 
-    plugin.publisher = NostrPublisher(plugin.relays, plugin.secret, plugin.pubkey)
+    try:
+        plugin.publisher = NostrPublisher(plugin.relays, plugin.secret, plugin.pubkey)
+    except Exception as e:
+        nostrify_log("an error occurred while initializing the NostrPublisher:")
+        nostrify_log(str(e))   
 
-    plugin.log("Nostrify plugin initialized")
+    nostrify_log("plugin initialized")
 
 # Subscriptions
 
@@ -205,7 +212,7 @@ def nostrifypubkey(plugin):
     """ Returns the node's pubkey """
     private_key = PrivateKey(bytes.fromhex(plugin.secret))
     public_key = f"{private_key.public_key.bech32()}"
-    plugin.log(f"Returning public_key: {public_key}")
+    nostrify_log(f"returning public_key: {public_key}")
     return public_key
 
 plugin.run()
