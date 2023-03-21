@@ -13,7 +13,7 @@ def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
     node_1 = node_factory.get_node()
     # Test dynamically
-    node_1.daemon.opts["nostr_relay"] = fake_relay 
+    node_1.daemon.opts["nostr_relay"] = [fake_relay] 
     node_1.daemon.opts["nostr_pubkey"] = fake_pubkey 
     node_1.rpc.plugin_start(plugin_path)
     node_1.daemon.wait_for_log("Plugin nostrify initialized")
@@ -35,7 +35,7 @@ def test_secret_exists(node_factory):
     """ Tests that a secret is available to nostrify """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
     node_1 = node_factory.get_node(options=opts)
@@ -46,7 +46,7 @@ def test_relay_is_settable(node_factory):
     """ Tests that a relay can be set """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
     node_1 = node_factory.get_node(options=opts)
@@ -59,7 +59,7 @@ def test_relay_is_multi_settable(node_factory):
     other_fake_relay = 'wss://other.fake.com'
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay, other_fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
     node_1 = node_factory.get_node(options=opts)
@@ -71,7 +71,7 @@ def test_pubkey_is_settable(node_factory):
     fake_pubkey = '123456'
     opts = {
         'plugin': plugin_path,
-        'nostr_pubkey': fake_pubkey,
+        'nostr_pubkey': [fake_pubkey],
         'nostr_relay': fake_relay 
     }
     node_1 = node_factory.get_node(options=opts)
@@ -83,7 +83,7 @@ def test_connect_event_is_observed(node_factory):
     
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
 
@@ -98,7 +98,7 @@ def test_channel_opened_event_is_observed(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
    
@@ -118,7 +118,7 @@ def test_get_nostr_pubkey(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': fake_relay,
+        'nostr_relay': [fake_relay],
         'nostr_pubkey': fake_pubkey 
     }
 
