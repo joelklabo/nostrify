@@ -25,13 +25,12 @@ def nostrify_log(message):
 def init(options, configuration, **kwargs):
     """ Initializes the plugin """
 
-    secret = plugin.rpc.makesecret(string='nostr')['secret']
-    plugin.secret = secret
+    plugin.secret = plugin.rpc.makesecret(string='nostr')['secret'] 
 
-    plugin.relays = plugin.get_option('nostr_relay')
+    plugin.relays = options['nostr_relay']
     nostrify_log(f"set to use relays: {plugin.relays}")
 
-    plugin.pubkey = plugin.get_option('nostr_pubkey')
+    plugin.pubkey = options['nostr_pubkey'] 
     nostrify_log(f"set to use pubkey: {plugin.pubkey}")
 
     if plugin.relays is None:
@@ -226,10 +225,12 @@ def nostrifypubkey(plugin):
 plugin.add_option('nostr_relay',
                   description="The relay you want to send events to",
                   default=[],
-                  multi=True)
+                  multi=True,
+                  opt_type='string')
 
 plugin.add_option('nostr_pubkey',
                   default='',
-                  description='The Nostr pubkey you want to send events to (default will send events publicly)')
+                  description='The Nostr pubkey you want to send events to (default will send events publicly)',
+                  opt_type='string')
 
 plugin.run()
