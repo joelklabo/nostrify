@@ -13,7 +13,7 @@ def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
     node_1 = node_factory.get_node()
     # Test dynamically
-    node_1.daemon.opts["nostr_relay"] = [fake_relay] 
+    node_1.daemon.opts["nostr_relay"] = fake_relay 
     node_1.daemon.opts["nostr_pubkey"] = fake_pubkey 
 
     print(f"++++ node_1.daemon.opts: {node_1.daemon.opts}")
