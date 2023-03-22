@@ -5,7 +5,7 @@ test_path = os.path.dirname(__file__)
 plugin_path = os.path.join(test_path, '..', 'nostrify.py')
 
 fake_relay = "wss://fake.relay.com"
-other_fake_relay = "wss://other.fake.relay.com"
+other_fake_relay = "wss://other.relay.com"
 
 fake_pubkey = "fakepubkey"
 
