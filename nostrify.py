@@ -7,6 +7,9 @@ from nostr_publisher import NostrPublisher
 
 plugin = Plugin()
 
+def handle_message(self, message):
+    """ Handles a message from a Nostr Relay """
+    nostrify_log(f"Received message: {message}")
 
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
@@ -15,22 +18,20 @@ def send_nostr_event(content):
     else:
         plugin.publisher.publish_dm_content(content)
 
-
 def nostrify_log(message):
     """ Logs a message to the plugin log """
-    plugin.log(f"[Nostrify]: {message}")
-
+    plugin.log(f"[Nostrify]: {message}")    
 
 @plugin.init()
 def init(options, configuration, **kwargs):
     """ Initializes the plugin """
 
-    plugin.secret = plugin.rpc.makesecret(string='nostr')['secret'] 
+    plugin.secret = plugin.rpc.makesecret(string='nostr')['secret']
 
     plugin.relays = options['nostr_relay']
     nostrify_log(f"set to use relays: {plugin.relays}")
 
-    plugin.pubkey = options['nostr_pubkey'] 
+    plugin.pubkey = options['nostr_pubkey']
     nostrify_log(f"set to use pubkey: {plugin.pubkey}")
 
     plugin.disabled_events = options['nostr_disable_event']
@@ -51,11 +52,11 @@ def init(options, configuration, **kwargs):
 
     try:
         plugin.publisher = NostrPublisher(
-            plugin.relays, plugin.secret, plugin.pubkey)
-    except Exception as e:
+            plugin.relays, plugin.secret, plugin.pubkey, handle_message)
+    except Exception as publisher_exception:
         nostrify_log(
             "an error occurred while initializing the NostrPublisher:")
-        nostrify_log(str(e))
+        nostrify_log(str(publisher_exception))
         return
 
     nostrify_log("plugin initialized")
@@ -97,7 +98,7 @@ def on_channel_state_changed(channel_state_changed, **kwargs):
 @plugin.subscribe("connect")
 def on_connect(id, address, **kwargs):
     """ Responds to connect event """
-    
+
     if "connect" in plugin.disabled_events:
         return
 
@@ -108,7 +109,7 @@ def on_connect(id, address, **kwargs):
 @plugin.subscribe("disconnect")
 def on_disconnect(id, **kwargs):
     """ Responds to disconnect event """
-    
+
     if "disconnect" in plugin.disabled_events:
         return
 
@@ -148,13 +149,13 @@ def on_forward_event(forward_event, **kwargs):
     """ Responds to forward_event event """
 
     status = forward_event.get('status', 'unknown')
-    
+
     if status == "offered" and "forward_offered" in plugin.disabled_events:
         return
-    
+
     if status == "failed" and "forward_failed" in plugin.disabled_events:
         return
-    
+
     if status == "settled" and "forward_settled" in plugin.disabled_events:
         return
 

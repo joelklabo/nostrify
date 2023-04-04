@@ -9,16 +9,16 @@ from nostr.relay_manager import RelayManager
 
 
 class Receiver:
-    def handle_event(self, event):
-        print(f"Received event: {event}")
+    def handle_message(self, message):
+        print(f"Received message: {message}")
 
 
 class NostrPublisher:
-    def __init__(self, relays, private_key_str, recipient_pubkey, receiver=None):
+    def __init__(self, relays, private_key_str, recipient_pubkey, handle_message=None):
         self.relays = relays
         self.private_key = PrivateKey(bytes.fromhex(private_key_str))
         self.recipient_pubkey = recipient_pubkey
-        self.reciever = receiver
+        self.handle_message = handle_message 
         self.relay_manager = RelayManager()
 
         # Add relays
@@ -38,12 +38,11 @@ class NostrPublisher:
         self.relay_manager.publish_message(message)
         time.sleep(5)
 
-        print("Subscribed to direct messages")
         while self.relay_manager.message_pool.has_events():
             event_msg = self.relay_manager.message_pool.get_event()
-            print("Received event: " + str(event_msg))
-            if self.reciever:
-                self.reciever.handle_event(event_msg)
+            message = self.decrypt_dm_message(event_msg)
+            if self.handle_message:
+                self.handle_message(event_msg)
 
     def publish_event(self, event):
         self.private_key.sign_event(event)
@@ -62,3 +61,8 @@ class NostrPublisher:
         )
         self.private_key.sign_event(dm)
         self.relay_manager.publish_event(dm)
+
+    def decrypt_dm_message(self, message):
+        decryted_content = self.private_key.decrypt_message(
+            message.event.content, self.recipient_pubkey)
+        return decryted_content
