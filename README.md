@@ -37,12 +37,20 @@ nostr_pubkey=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2
 
 You can disable certain events from being sent by setting `nostr_disable_event` (you can set this multiple times). For example if you wanted to disable connection events and forwards that didn't succeed you could add this to your config file:
 
+Currently available events you can disable:
+- connect
+- disconnect
+- forward_offered
+- forward_failed
+
 ```
-nostr_disabled_event=connect
-nostr_disabled_event=disconnect
-nostr_disabled_event=forward_offered
-nostr_disabled_event=forward_failed
+nostr_disable_event=connect
+nostr_disable_event=disconnect
+nostr_disable_event=forward_offered
+nostr_disable_event=forward_failed
 ```
+
+If there are others you want to disable open and issue and I'll try and add them.
 
 ### Example of Nostrify messages in Damus DM:
 

@@ -257,7 +257,8 @@ plugin.add_option('nostr_pubkey',
                   opt_type='string')
 
 plugin.add_option('nostr_disable_event',
-                  default='',
                   description='The CLN events you do NOT want to receive on Nostr (default will send all events)',
+                  default=[],
+                  multi=True,
                   opt_type='string')
 plugin.run()
