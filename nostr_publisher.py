@@ -8,17 +8,14 @@ from nostr.key import PrivateKey
 from nostr.relay_manager import RelayManager
 
 
-class Receiver:
-    def handle_message(self, message):
-        print(f"Received message: {message}")
-
-
 class NostrPublisher:
+    """ Handles communication with the Nostr relays """
+
     def __init__(self, relays, private_key_str, recipient_pubkey, handle_message=None):
         self.relays = relays
         self.private_key = PrivateKey(bytes.fromhex(private_key_str))
         self.recipient_pubkey = recipient_pubkey
-        self.handle_message = handle_message 
+        self.handle_message = handle_message
         self.relay_manager = RelayManager()
 
         # Add relays

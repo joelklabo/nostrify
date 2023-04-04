@@ -7,7 +7,7 @@ plugin_path = os.path.join(test_path, '..', 'nostrify.py')
 fake_relay = "wss://fake.relay.com"
 other_fake_relay = "wss://other.relay.com"
 
-fake_pubkey = "fakepubkey"
+fake_pubkey = "2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2"
 
 def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
