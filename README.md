@@ -14,19 +14,22 @@ By default `Nostrify` uses `lightning-cli makesecret string=nostr` to generate a
 
 See the documentation for `makesecret` [here](https://lightning.readthedocs.io/lightning-makesecret.7.html?highlight=makesecret)
 
-The relay defaults to `wss://nostr.klabo.blog`.
-
 To find the pubkey of your node run:
 ```bash
 $ lightning-cli nostrifypubkey
 "npub1sqqres47s8x9ztva4nn525j5w72l23tvw0rh04t49h3gg5xccq7spvtqzs"
 ```
 
-By default `Nostrify` sends events as DMs. To receive events as an encrypted DM set a pubkey in your config file. You can also set a custom relay here:
+## Required Settings (`nostr_relay`, `nostr_pubkey`)
+
+`Nostrify` sends events as DMs. To receive events as an encrypted DM you must set a pubkey in your config file.
+
+You will also need to set some relays with the `nostr_relay` option, you can set multiple if you like. For example:
 
 ```
 # Nostrify
 nostr_relay=wss://nostr.klabo.blog
+nostr_relay=wss://relay.damus.io
 nostr_pubkey=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2
 ```
 
