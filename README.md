@@ -60,13 +60,6 @@ If there are others you want to disable open and issue and I'll try and add them
 
 Follow me on nostr `npub19a86gzxctwtz68l8zld2u9y2fjvyyj4juyx8m5geylssrmfj27eqs22ckt` and send me a Zap or tip at `joel@klabo.blog` 🤙
 
-# Setting a Custom Relay
-
-In your lightning config file set this value:
-`relay=<your preferred relay to send events to>` (default is `wss://nostr.klabo.blog`)
-
-Then start `lightningd` with the Nostrify plugin. `lightningd` must be restarted to get access to config values.
-
 # Contribute
 
 If you find a bug or have feature requests file an issue. PRs are also welcomed 🤙
