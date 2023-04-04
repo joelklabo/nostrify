@@ -19,7 +19,7 @@ class NostrPublisher:
 			self.relay_manager.add_relay(relay)
 
 		# Subscribe to direct messages
-		filters = Filters([Filter(authors=[self.recipient_pubkey], kinds=[EventKind.DIRECT_MESSAGE])])
+		filters = Filters([Filter(authors=[self.recipient_pubkey], kinds=[EventKind.ENCRYPTED_DIRECT_MESSAGE])])
 		subscription_id = "nostrify:" + self.recipient_pubkey
 		request = [ClientMessageType.REQUEST, subscription_id]
 		request.extend(filters.to_json_array())
