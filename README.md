@@ -33,6 +33,17 @@ nostr_relay=wss://relay.damus.io
 nostr_pubkey=2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2
 ```
 
+## Disabling Events
+
+You can disable certain events from being sent by setting `nostr_disable_event` (you can set this multiple times). For example if you wanted to disable connection events and forwards that didn't succeed you could add this to your config file:
+
+```
+nostr_disabled_event=connect
+nostr_disabled_event=disconnect
+nostr_disabled_event=forward_offered
+nostr_disabled_event=forward_failed
+```
+
 ### Example of Nostrify messages in Damus DM:
 
 ![IMG_537E93ECED3E-1](https://user-images.githubusercontent.com/264977/226097495-f598913c-9a82-4654-a802-aacb8bd315a9.jpeg)
