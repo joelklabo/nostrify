@@ -19,19 +19,19 @@ def test_nostrify_starts(node_factory):
     print(f"++++ node_1.daemon.opts: {node_1.daemon.opts}")
 
     node_1.rpc.plugin_start(plugin_path)
-    node_1.daemon.wait_for_log("Plugin nostrify initialized")
+    node_1.daemon.wait_for_log("plugin initialized")
     node_1.rpc.plugin_stop(plugin_path)
     node_1.rpc.plugin_start(plugin_path)
-    node_1.daemon.wait_for_log("Plugin nostrify initialized")
+    node_1.daemon.wait_for_log("plugin initialized")
     node_1.stop()
     # Then statically
     node_1.daemon.opts["plugin"] = plugin_path
     node_1.start()
     # Start at 0 and 're-await' the two inits above. Otherwise this is flaky.
     node_1.daemon.logsearch_start = 0
-    node_1.daemon.wait_for_logs(["Plugin nostrify initialized",
-                             "Plugin nostrify initialized",
-                             "Plugin nostrify initialized"])
+    node_1.daemon.wait_for_logs(["plugin initialized",
+                             "plugin initialized",
+                             "plugin initialized"])
     node_1.rpc.plugin_stop(plugin_path)
 
 def test_secret_exists(node_factory):
@@ -43,7 +43,7 @@ def test_secret_exists(node_factory):
     }
     node_1 = node_factory.get_node(options=opts)
 
-    assert not node_1.daemon.is_in_log("Must pass a `secret` option for creating events")
+    assert not node_1.daemon.is_in_log("must pass a `secret` option for creating events")
 
 def test_relay_is_settable(node_factory):
     """ Tests that a relay can be set """
