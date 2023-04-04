@@ -127,3 +127,39 @@ def test_get_nostr_pubkey(node_factory):
     nostr_pubkey = node_1.rpc.nostrifypubkey()
     assert nostr_pubkey is not None
     
+def test_no_events_disabled_is_default(node_factory):
+    """ Tests that a secret is available to nostrify """
+    opts = {
+        'plugin': plugin_path,
+        'nostr_relay': [fake_relay],
+        'nostr_pubkey': fake_pubkey,
+        'nostr_disable_event': []
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert node_1.daemon.is_in_log("set to ignore events")
+
+def test_connect_event_disabled(node_factory):
+    """ Tests that a secret is available to nostrify """
+    opts = {
+        'plugin': plugin_path,
+        'nostr_relay': [fake_relay],
+        'nostr_pubkey': fake_pubkey,
+        'nostr_disable_event': ["connect"]
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert not node_1.daemon.is_in_log("Received connect event")
+
+def test_multiple_events_can_be_disabled(node_factory):
+    """ Tests that a secret is available to nostrify """
+    opts = {
+        'plugin': plugin_path,
+        'nostr_relay': [fake_relay],
+        'nostr_pubkey': fake_pubkey,
+        'nostr_disable_event': ["connect", "disconnect"]
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert not node_1.daemon.is_in_log("Received connect event")
+    assert not node_1.daemon.is_in_log("Received disconnect event")

@@ -33,6 +33,9 @@ def init(options, configuration, **kwargs):
     plugin.pubkey = options['nostr_pubkey'] 
     nostrify_log(f"set to use pubkey: {plugin.pubkey}")
 
+    plugin.disabled_events = options['nostr_disable_event']
+    nostrify_log(f"set to ignore events: {plugin.disabled_events}")
+
     if plugin.relays is None:
         nostrify_log(
             "must set at least one relay with the `nostr_relay` option")
@@ -94,6 +97,10 @@ def on_channel_state_changed(channel_state_changed, **kwargs):
 @plugin.subscribe("connect")
 def on_connect(id, address, **kwargs):
     """ Responds to connect event """
+    
+    if "connect" in plugin.disabled_events:
+        return
+
     content = f"Received connect event for peer: {id}"
     send_nostr_event(content)
 
@@ -101,6 +108,10 @@ def on_connect(id, address, **kwargs):
 @plugin.subscribe("disconnect")
 def on_disconnect(id, **kwargs):
     """ Responds to disconnect event """
+    
+    if "disconnect" in plugin.disabled_events:
+        return
+
     content = f"Received disconnect event for peer: {id}"
     send_nostr_event(content)
 
@@ -135,6 +146,18 @@ def on_warning(warning, **kwargs):
 @plugin.subscribe("forward_event")
 def on_forward_event(forward_event, **kwargs):
     """ Responds to forward_event event """
+
+    status = forward_event.get('status', 'unknown')
+    
+    if status == "offered" and "forward_offered" in plugin.disabled_events:
+        return
+    
+    if status == "failed" and "forward_failed" in plugin.disabled_events:
+        return
+    
+    if status == "settled" and "forward_settled" in plugin.disabled_events:
+        return
+
     content = f"""Received a forward event with payment hash: {forward_event.get('payment_hash', 'unknown')}
     in channel: {forward_event.get('in_channel', 'unknown')}
     out channel: {forward_event.get('out_channel', 'unknown')}
@@ -230,7 +253,12 @@ plugin.add_option('nostr_relay',
 
 plugin.add_option('nostr_pubkey',
                   default='',
-                  description='The Nostr pubkey you want to send events to (default will send events publicly)',
+                  description='The Nostr pubkey you want to send events to',
                   opt_type='string')
 
+plugin.add_option('nostr_disable_event',
+                  description='The CLN events you do NOT want to receive on Nostr (default will send all events)',
+                  default=[],
+                  multi=True,
+                  opt_type='string')
 plugin.run()
