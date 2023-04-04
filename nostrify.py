@@ -57,6 +57,7 @@ def init(options, configuration, **kwargs):
         nostrify_log(
             "an error occurred while initializing the NostrPublisher:")
         nostrify_log(str(publisher_exception))
+        nostrify_log("secret: " + plugin.secret)
         return
 
     nostrify_log("plugin initialized")

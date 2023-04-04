@@ -30,10 +30,10 @@ class NostrPublisher:
         request.extend(filters.to_json_array())
         self.relay_manager.add_subscription(subscription_id, filters)
         self.relay_manager.open_connections({"cert_reqs": ssl.CERT_NONE})
-        time.sleep(5)
+        time.sleep(2)
         message = json.dumps(request)
         self.relay_manager.publish_message(message)
-        time.sleep(5)
+        time.sleep(2)
 
         while self.relay_manager.message_pool.has_events():
             event_msg = self.relay_manager.message_pool.get_event()

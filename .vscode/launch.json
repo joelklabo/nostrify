@@ -5,10 +5,10 @@
       "name": "Python: Debug Tests",
       "type": "python",
       "request": "launch",
-      "module": "unittest",
+      "module": "pytest",
       "args": [
         "-k",
-        "test_nostr_publisher"
+        "test_nostrify"
       ],
       "console": "integratedTerminal",
       "justMyCode": true

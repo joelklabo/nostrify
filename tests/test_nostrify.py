@@ -4,17 +4,17 @@ from pyln.testing.fixtures import *
 test_path = os.path.dirname(__file__)
 plugin_path = os.path.join(test_path, '..', 'nostrify.py')
 
-fake_relay = "wss://fake.relay.com"
-other_fake_relay = "wss://other.relay.com"
+FIRST_RELAY = "wss://nostr.klabo.blog"
+SECOND_RELAY = "wss://relay.damus.io"
 
-fake_pubkey = "2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2"
+MY_PUBKEY = "2f4fa408d85b962d1fe717daae148a4c98424ab2e10c7dd11927e101ed3257b2"
 
 def test_nostrify_starts(node_factory):
     """ Tests that nostrify starts dynamically and statically """
     node_1 = node_factory.get_node()
     # Test dynamically
-    node_1.daemon.opts["nostr_relay"] = fake_relay 
-    node_1.daemon.opts["nostr_pubkey"] = fake_pubkey 
+    node_1.daemon.opts["nostr_relay"] = [FIRST_RELAY]
+    node_1.daemon.opts["nostr_pubkey"] = MY_PUBKEY
 
     print(f"++++ node_1.daemon.opts: {node_1.daemon.opts}")
 
@@ -38,8 +38,8 @@ def test_secret_exists(node_factory):
     """ Tests that a secret is available to nostrify """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
     node_1 = node_factory.get_node(options=opts)
 
@@ -49,23 +49,23 @@ def test_relay_is_settable(node_factory):
     """ Tests that a relay can be set """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
     node_1 = node_factory.get_node(options=opts)
 
-    assert node_1.daemon.is_in_log(fake_relay)
+    assert node_1.daemon.is_in_log(FIRST_RELAY)
 
 def test_relay_is_multi_settable(node_factory):
     """ Tests that a relay can be set """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay, other_fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY, SECOND_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
     node_1 = node_factory.get_node(options=opts)
 
-    assert node_1.daemon.is_in_log(fake_relay)
+    assert node_1.daemon.is_in_log(FIRST_RELAY)
 
 def test_pubkey_is_settable(node_factory):
     """ Tests that a pubkey can be set """
@@ -73,7 +73,7 @@ def test_pubkey_is_settable(node_factory):
     opts = {
         'plugin': plugin_path,
         'nostr_pubkey': fake_pubkey,
-        'nostr_relay': [fake_relay] 
+        'nostr_relay': [FIRST_RELAY] 
     }
     node_1 = node_factory.get_node(options=opts)
 
@@ -84,8 +84,8 @@ def test_connect_event_is_observed(node_factory):
     
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
 
     node_1, node_2 = node_factory.line_graph(2, opts=opts, wait_for_announce=True)
@@ -99,8 +99,8 @@ def test_channel_opened_event_is_observed(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
    
     node_1 = node_factory.get_node(options=opts)
@@ -119,8 +119,8 @@ def test_get_nostr_pubkey(node_factory):
 
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey 
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY 
     }
 
     node_1 = node_factory.get_node(options=opts)
@@ -131,8 +131,8 @@ def test_no_events_disabled_is_default(node_factory):
     """ Tests that a secret is available to nostrify """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey,
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY,
         'nostr_disable_event': []
     }
     node_1 = node_factory.get_node(options=opts)
@@ -143,8 +143,8 @@ def test_connect_event_disabled(node_factory):
     """ Tests that a secret is available to nostrify """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey,
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY,
         'nostr_disable_event': ["connect"]
     }
     node_1 = node_factory.get_node(options=opts)
@@ -155,11 +155,22 @@ def test_multiple_events_can_be_disabled(node_factory):
     """ Tests that a secret is available to nostrify """
     opts = {
         'plugin': plugin_path,
-        'nostr_relay': [fake_relay],
-        'nostr_pubkey': fake_pubkey,
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY,
         'nostr_disable_event': ["connect", "disconnect"]
     }
     node_1 = node_factory.get_node(options=opts)
 
     assert not node_1.daemon.is_in_log("Received connect event")
     assert not node_1.daemon.is_in_log("Received disconnect event")
+
+def test_nostr_publiser_created(node_factory):
+    """ Tests that the NostrPublisher is created """
+    opts = {
+        'plugin': plugin_path,
+        'nostr_relay': [FIRST_RELAY, SECOND_RELAY],
+        'nostr_pubkey': MY_PUBKEY
+    }
+    node_1 = node_factory.get_node(options=opts)
+
+    assert not node_1.daemon.is_in_log("an error occurred while initializing the NostrPublisher")
