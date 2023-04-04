@@ -7,48 +7,58 @@ from nostr.message_type import ClientMessageType
 from nostr.key import PrivateKey
 from nostr.relay_manager import RelayManager
 
+
+class Receiver:
+    def handle_event(self, event):
+        print(f"Received event: {event}")
+
+
 class NostrPublisher:
-	def __init__(self, relays, private_key_str, recipient_pubkey):
-		self.relays = relays
-		self.private_key = PrivateKey(bytes.fromhex(private_key_str))
-		self.recipient_pubkey = recipient_pubkey
-		self.relay_manager = RelayManager()
-	
-		# Add relays
-		for relay in self.relays:
-			self.relay_manager.add_relay(relay)
+    def __init__(self, relays, private_key_str, recipient_pubkey, receiver=None):
+        self.relays = relays
+        self.private_key = PrivateKey(bytes.fromhex(private_key_str))
+        self.recipient_pubkey = recipient_pubkey
+        self.reciever = receiver
+        self.relay_manager = RelayManager()
 
-		# Subscribe to direct messages
-		filters = Filters([Filter(authors=[self.recipient_pubkey], kinds=[EventKind.ENCRYPTED_DIRECT_MESSAGE])])
-		subscription_id = "nostrify:" + self.recipient_pubkey
-		request = [ClientMessageType.REQUEST, subscription_id]
-		request.extend(filters.to_json_array())
-		self.relay_manager.add_subscription(subscription_id, filters)
-		self.relay_manager.open_connections({"cert_reqs": ssl.CERT_NONE})
-		time.sleep(1.25)
-		message = json.dumps(request)
-		self.relay_manager.publish_message(message)
-		time.sleep(1.25)
+        # Add relays
+        for relay in self.relays:
+            self.relay_manager.add_relay(relay)
 
-		while self.relay_manager.message_pool.has_events():
-			event_msg = self.relay_manager.message_pool.get_event()
-			print("Received event: " + str(event_msg))
+        # Subscribe to direct messages
+        filters = Filters([Filter(authors=[self.recipient_pubkey], kinds=[
+                          EventKind.ENCRYPTED_DIRECT_MESSAGE])])
+        subscription_id = "nostrify:" + self.recipient_pubkey
+        request = [ClientMessageType.REQUEST, subscription_id]
+        request.extend(filters.to_json_array())
+        self.relay_manager.add_subscription(subscription_id, filters)
+        self.relay_manager.open_connections({"cert_reqs": ssl.CERT_NONE})
+        time.sleep(5)
+        message = json.dumps(request)
+        self.relay_manager.publish_message(message)
+        time.sleep(5)
 
-	def publish_event(self, event):
-		self.private_key.sign_event(event)
-		self.relay_manager.publish_event(event)
-	
-	def publish_content(self, content):
-		event = Event(content)
-		self.private_key.sign_event(event)
-		self.relay_manager.publish_event(event)
-	
-	def publish_dm_content(self, content):
-		dm = EncryptedDirectMessage(
-		  recipient_pubkey=self.recipient_pubkey,
-		  cleartext_content=content
-		)
-		self.private_key.sign_event(dm)
-		self.relay_manager.publish_event(dm)
+        print("Subscribed to direct messages")
+        while self.relay_manager.message_pool.has_events():
+            event_msg = self.relay_manager.message_pool.get_event()
+            print("Received event: " + str(event_msg))
+            if self.reciever:
+                self.reciever.handle_event(event_msg)
 
-		
+    def publish_event(self, event):
+        self.private_key.sign_event(event)
+        self.relay_manager.publish_event(event)
+
+    def publish_content(self, content):
+        event = Event(content)
+        self.private_key.sign_event(event)
+        self.relay_manager.publish_event(event)
+
+    def publish_dm_content(self, content):
+        print(f"Publishing direct message {content}")
+        dm = EncryptedDirectMessage(
+            recipient_pubkey=self.recipient_pubkey,
+            cleartext_content=content
+        )
+        self.private_key.sign_event(dm)
+        self.relay_manager.publish_event(dm)
