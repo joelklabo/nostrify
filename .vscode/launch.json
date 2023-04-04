@@ -2,7 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Debug Tests",
+      "name": "Python: Integration Tests",
+      "type": "python",
+      "request": "launch",
+      "module": "unittest",
+      "args": [
+        "-k",
+        "test_nostr_publisher"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: Unit Tests",
       "type": "python",
       "request": "launch",
       "module": "pytest",
@@ -12,6 +24,17 @@
       ],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: Single Unit Test",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "tests/test_nostrify.py::test_nostr_publiser_created"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false 
     }
   ]
 }

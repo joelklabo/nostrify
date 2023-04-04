@@ -27,10 +27,13 @@ class TestNostrPublisher(unittest.TestCase):
         self.receiver = TestReceiver()
 
         # Create NostrPublisher instances for sender and recipient
-        self.sender = NostrPublisher(
-            relays, sender_private_key.hex(), self.recipient_pubkey, self.receiver)
-        self.recipient = NostrPublisher(
-            relays, recipient_private_key.hex(), self.sender_pubkey, self.receiver)
+        try:
+            self.sender = NostrPublisher(
+                relays, sender_private_key.hex(), self.recipient_pubkey)
+            self.recipient = NostrPublisher(
+                relays, recipient_private_key.hex(), self.sender_pubkey)
+        except Exception as e:
+            print(e)
 
         time.sleep(3)
         print("Finished setting up")

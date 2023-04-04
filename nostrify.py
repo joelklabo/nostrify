@@ -8,7 +8,6 @@ from nostr_publisher import NostrPublisher, Receiver
 
 
 plugin = Plugin()
-receiver = Receiver()
 
 def handle_message(self, message):
     """ Handles a message from a Nostr Relay """
@@ -55,7 +54,7 @@ def init(options, configuration, **kwargs):
 
     try:
         plugin.publisher = NostrPublisher(
-            plugin.relays, plugin.secret, plugin.pubkey, receiver)
+            plugin.relays, plugin.secret, plugin.pubkey)
     except Exception as publisher_exception:
         nostrify_log(
             "an error occurred while initializing the NostrPublisher:")

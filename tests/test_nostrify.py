@@ -141,14 +141,26 @@ def test_no_events_disabled_is_default(node_factory):
 
 def test_connect_event_disabled(node_factory):
     """ Tests that a secret is available to nostrify """
-    opts = {
+
+    opts1 = {
+        'plugin': plugin_path,
+        'nostr_relay': [FIRST_RELAY],
+        'nostr_pubkey': MY_PUBKEY
+    }
+    
+    opts2 = {
         'plugin': plugin_path,
         'nostr_relay': [FIRST_RELAY],
         'nostr_pubkey': MY_PUBKEY,
         'nostr_disable_event': ["connect"]
     }
-    node_1 = node_factory.get_node(options=opts)
+    
+    node_1 = node_factory.get_node(options=opts1)
+    node_2 = node_factory.get_node(options=opts2)
 
+    node_factory.join_nodes([node_1, node_2], fundamount=10**6, wait_for_announce=True)
+
+    assert node_2.daemon.is_in_log("Received connect event")
     assert not node_1.daemon.is_in_log("Received connect event")
 
 def test_multiple_events_can_be_disabled(node_factory):

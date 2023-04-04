@@ -14,11 +14,10 @@ class Receiver:
 class NostrPublisher:
     """ Handles communication with the Nostr relays """
 
-    def __init__(self, relays, private_key_str, recipient_pubkey, receiver=None):
+    def __init__(self, relays, private_key_str, recipient_pubkey):
         self.relays = relays
         self.private_key = PrivateKey(bytes.fromhex(private_key_str))
         self.recipient_pubkey = recipient_pubkey
-        self.receiver = receiver 
         self.relay_manager = RelayManager()
 
         # Add relays
@@ -41,8 +40,6 @@ class NostrPublisher:
         while self.relay_manager.message_pool.has_events():
             event_msg = self.relay_manager.message_pool.get_event()
             message = self.decrypt_dm_message(event_msg)
-            if self.receiver.handle_message:
-                self.receiver.handle_message(event_msg)
 
     def publish_event(self, event):
         self.private_key.sign_event(event)
