@@ -7,39 +7,58 @@ from nostr_publisher import NostrPublisher
 
 plugin = Plugin()
 
+
 def send_nostr_event(content):
     """ Sends `content` as a Nostr Event"""
     if os.environ.get('TEST_DEBUG') is not None:
-        plugin.log("++++++ Nostrify TEST DEBUG MESSAGE CONTENT ++++++")
-        plugin.log(content)
+        nostrify_log(content)
     else:
         plugin.publisher.publish_dm_content(content)
+
+
+def nostrify_log(message):
+    """ Logs a message to the plugin log """
+    plugin.log(f"[Nostrify]: {message}")
+
 
 @plugin.init()
 def init(options, configuration, **kwargs):
     """ Initializes the plugin """
-   
-    secret = plugin.rpc.makesecret(string='nostr')['secret']
-    plugin.secret = secret
 
-    plugin.relay = plugin.get_option('nostr_relay')
-    plugin.log(f"Nostrify set to use relay: {plugin.relay}")
+    plugin.secret = plugin.rpc.makesecret(string='nostr')['secret'] 
 
-    plugin.pubkey = plugin.get_option('nostr_pubkey')
-    plugin.log(f"Nostrify set to use pubkey: {plugin.pubkey}")
-    
-    if plugin.secret is None:
-        plugin.log("Must pass a `secret` option for creating events")
+    plugin.relays = options['nostr_relay']
+    nostrify_log(f"set to use relays: {plugin.relays}")
+
+    plugin.pubkey = options['nostr_pubkey'] 
+    nostrify_log(f"set to use pubkey: {plugin.pubkey}")
+
+    if plugin.relays is None:
+        nostrify_log(
+            "must set at least one relay with the `nostr_relay` option")
         return
-    
+
+    if plugin.secret is None:
+        nostrify_log("must pass a `secret` option for creating events")
+        return
+
     if plugin.pubkey is None:
-        plugin.log("Must pass a `pubkey` option for creating events")
+        nostrify_log("must set a pubkey with the `nostr_pubkey` option")
+        return
 
-    plugin.publisher = NostrPublisher([plugin.relay], plugin.secret, plugin.pubkey)
+    try:
+        plugin.publisher = NostrPublisher(
+            plugin.relays, plugin.secret, plugin.pubkey)
+    except Exception as e:
+        nostrify_log(
+            "an error occurred while initializing the NostrPublisher:")
+        nostrify_log(str(e))
+        return
 
-    plugin.log("Plugin nostrify initialized")
+    nostrify_log("plugin initialized")
 
 # Subscriptions
+
 
 @plugin.subscribe("channel_opened")
 def on_channel_opened(channel_opened, **kwargs):
@@ -175,6 +194,7 @@ def on_coin_movement(coin_movement, **kwargs):
     coin type: {coin_movement.get('coin_type', 'unknown')}"""
     send_nostr_event(content)
 
+
 @plugin.subscribe("openchannel_peer_sigs")
 def on_openchannel_peer_sigs(openchannel_peer_sigs, **kwargs):
     """ Responds to openchannel_peer_sigs event """
@@ -188,19 +208,29 @@ def on_shutdown(**kwargs):
     """ Responds to shutdown event """
     send_nostr_event("Received a shutdown event")
 
-# Options
-
-plugin.add_option('nostr_relay', 'wss://nostr.klabo.blog', 'The relay you want to send events to (default: wss://nostr.klabo.blog)')
-plugin.add_option('nostr_pubkey', '', 'The Nostr pubkey you want to send events to (default will send events publicly)')
-
 # Methods
+
 
 @plugin.method("nostrifypubkey")
 def nostrifypubkey(plugin):
     """ Returns the node's pubkey """
     private_key = PrivateKey(bytes.fromhex(plugin.secret))
     public_key = f"{private_key.public_key.bech32()}"
-    plugin.log(f"Returning public_key: {public_key}")
+    nostrify_log(f"returning public_key: {public_key}")
     return public_key
+
+# Options
+
+
+plugin.add_option('nostr_relay',
+                  description="The relay you want to send events to",
+                  default=[],
+                  multi=True,
+                  opt_type='string')
+
+plugin.add_option('nostr_pubkey',
+                  default='',
+                  description='The Nostr pubkey you want to send events to (default will send events publicly)',
+                  opt_type='string')
 
 plugin.run()
