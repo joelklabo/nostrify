@@ -1,3 +1,5 @@
+# Use [nostr-control](https://github.com/joelklabo/nostr-control) Instead, this is no longer maintained.
+
 [![CI Tests](https://github.com/joelklabo/nostrify/actions/workflows/ci.yml/badge.svg)](https://github.com/joelklabo/nostrify/actions/workflows/ci.yml)
 
 Tested on Bitcoin Core `24.0.1`, `23.1`
